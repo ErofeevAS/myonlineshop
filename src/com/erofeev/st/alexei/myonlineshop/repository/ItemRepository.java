@@ -1,0 +1,20 @@
+package com.erofeev.st.alexei.myonlineshop.repository;
+
+import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
+
+import java.sql.Connection;
+import java.util.List;
+
+public interface ItemRepository {
+
+    List<Item> findAll(Connection connection);
+
+    Item save(Connection connection, Item item);
+
+    Boolean update(Connection connection, Item item);
+
+    Boolean delete(Connection connection, Item item);
+
+    Item findById(Connection connection, Long id);
+
+}

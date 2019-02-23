@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<items xmlns="http://www.it-academy.by"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.it-academy.by items.xsd">
+    <item id="1">
+        <name>PS4</name>
+        <description>console</description>
+        <uniqueNumber>sadasd23dasdasdasdasd</uniqueNumber>
+        <price>200.1</price>
+    </item>
+    <item id="1">
+        <name>PS5</name>
+        <description>new brand console</description>
+        <uniqueNumber>sadasdasd23dasdasdasdasd</uniqueNumber>
+        <price>2030.1</price>
+    </item>
+    <item id="10">
+        <name>Nintendo</name>
+        <description>portable console</description>
+        <uniqueNumber>sadaa1sd23daasdasdasdasd</uniqueNumber>
+        <price>132.1</price>
+    </item>
+    <item id="11">
+        <name>XBOX</name>
+        <description></description>
+        <uniqueNumber>sadas23d23dasdasdasd23asd</uniqueNumber>
+        <price>100.1</price>
+    </item>
+
+</items>
