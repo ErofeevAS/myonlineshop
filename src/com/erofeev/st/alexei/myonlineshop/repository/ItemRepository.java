@@ -11,6 +11,8 @@ public interface ItemRepository {
 
     Item save(Connection connection, Item item);
 
+    Boolean saveList(Connection connection, List<Item> items);
+
     Boolean update(Connection connection, Item item);
 
     Boolean delete(Connection connection, Item item);

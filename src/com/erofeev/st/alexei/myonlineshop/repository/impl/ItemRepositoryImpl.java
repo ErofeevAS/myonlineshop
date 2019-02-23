@@ -72,6 +72,38 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
+    public Boolean saveList(Connection connection, List<Item> items) {
+        String query = " INSERT INTO items VALUES(?,?,?,?,?)";
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                for (Item item : items) {
+                    Long id = item.getId();
+                    String name = item.getName();
+                    String description = item.getDescription();
+                    String uniqueNumber = item.getUniqueNumber();
+                    BigDecimal price = item.getPrice();
+                    preparedStatement.setLong(1, id);
+                    preparedStatement.setString(2, name);
+                    preparedStatement.setString(3, description);
+                    preparedStatement.setString(4, uniqueNumber);
+                    preparedStatement.setBigDecimal(5, price);
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
+                connection.commit();
+                return true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Can't save list of items");
+            e.getMessage();
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public Boolean update(Connection connection, Item item) {
         String query = "UPDATE  items SET name=?,description=?,unique_number=?,price=? WHERE id=?";
         Long id = item.getId();

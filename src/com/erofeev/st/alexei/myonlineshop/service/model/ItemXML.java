@@ -1,12 +1,22 @@
 package com.erofeev.st.alexei.myonlineshop.service.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.math.BigDecimal;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ItemXML {
+    @XmlAttribute(name = "id")
     private Long id;
+    @XmlElement(name = "name")
     private String name;
+    @XmlElement(name = "description")
     private String description;
+    @XmlElement(name = "uniqueNumber")
     private String uniqueNumber;
+    @XmlElement(name = "price")
     private BigDecimal price;
 
     public ItemXML() {

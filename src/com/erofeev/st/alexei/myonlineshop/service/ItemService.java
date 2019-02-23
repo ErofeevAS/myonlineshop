@@ -2,6 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service;
 
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 
+import java.io.File;
 import java.util.List;
 
 public interface ItemService {
@@ -15,5 +16,7 @@ public interface ItemService {
     Boolean deleteItem(Item item);
 
     Item findItemById(Long id);
+
+    Boolean importFromXml(File xml,File xsd);
 
 }

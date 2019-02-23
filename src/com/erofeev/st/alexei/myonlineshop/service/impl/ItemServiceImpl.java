@@ -6,8 +6,12 @@ import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServic
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ItemRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
+import com.erofeev.st.alexei.myonlineshop.service.XMLService;
+import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.model.ItemXML;
 import com.erofeev.st.alexei.myonlineshop.service.util.UniqueNumberGenerator;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -96,5 +100,16 @@ public class ItemServiceImpl implements ItemService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Boolean importFromXml(File xml, File xsd) {
+        XMLService xmlService = XMLServiceImpl.getInstance();
+        List<ItemXML> itemXMLS = xmlService.importItemsFromFile(xml, xsd);
+        List<Item> items = ItemConverterImpl.convertItemsXMLtoItems(itemXMLS);
+        Connection connection = connectionService.getConnection();
+        itemRepository.saveList(connection, items);
+        System.out.println("Items was saved");
+        return true;
     }
 }
