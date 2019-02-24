@@ -43,15 +43,5 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    @Override
-    public List<User> findAllUser(boolean isLazy) {
-        List<User> users;
-        try (Connection connection = connectionService.getConnection()) {
-            users = userRepository.findAll(connection);
-            return users;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 }

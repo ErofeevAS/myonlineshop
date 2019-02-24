@@ -26,11 +26,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> findAll(Connection connection) {
+    public List<Item> findAll(Connection connection, int pageNumber, int amount) {
         List<Item> items = new ArrayList<>();
-        String query = "SELECT * FROM ITEMS";
+        int offset = (pageNumber - 1) * amount;
+        String query = "SELECT * FROM ITEMS WHERE deleted = false LIMIT ?,? ";
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, amount);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Item item = getItem(rs);
@@ -73,7 +76,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Boolean saveList(Connection connection, List<Item> items) {
-        String query = " INSERT INTO items VALUES(?,?,?,?,?)";
+        String query = " INSERT INTO items VALUES(?,?,?,?,?,?)";
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -88,6 +91,8 @@ public class ItemRepositoryImpl implements ItemRepository {
                     preparedStatement.setString(3, description);
                     preparedStatement.setString(4, uniqueNumber);
                     preparedStatement.setBigDecimal(5, price);
+                    preparedStatement.setBoolean(6, false);
+
                     preparedStatement.addBatch();
                 }
                 preparedStatement.executeBatch();
@@ -129,7 +134,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Boolean delete(Connection connection, Item item) {
-        String query = "DELETE FROM items WHERE id=?";
+        String query = "UPDATE items  SET deleted = TRUE WHERE id=?";
         Long id = item.getId();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);

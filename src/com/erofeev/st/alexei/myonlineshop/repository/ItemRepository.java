@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ItemRepository {
 
-    List<Item> findAll(Connection connection);
+    List<Item> findAll(Connection connection,int pageNumber, int amount);
 
     Item save(Connection connection, Item item);
 

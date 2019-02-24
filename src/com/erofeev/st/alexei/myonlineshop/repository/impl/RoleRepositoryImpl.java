@@ -3,6 +3,7 @@ package com.erofeev.st.alexei.myonlineshop.repository.impl;
 import com.erofeev.st.alexei.myonlineshop.repository.RoleRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class RoleRepositoryImpl implements RoleRepository {
         Long id = resultSet.getLong(1);
         String name = resultSet.getString(2);
         Long permissionId = resultSet.getLong(3);
-        String permissionName = resultSet.getString(4);
+        Permissions permissionName = Permissions.valueOf(resultSet.getString(4));
         Permission permission = new Permission();
         permission.setId(permissionId);
         permission.setName(permissionName);

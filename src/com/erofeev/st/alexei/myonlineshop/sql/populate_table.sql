@@ -1,21 +1,17 @@
-INSERT INTO permissions (name) VALUES('create_item');
-INSERT INTO permissions (name) VALUES('delete_item');
-INSERT INTO permissions (name) VALUES('upload_with_xml_item');
-INSERT INTO permissions (name) VALUES('show_order');
-INSERT INTO permissions (name) VALUES('change_order_status');
-INSERT INTO permissions (name) VALUES('create_order');
-INSERT INTO permissions (name) VALUES('change_profile');
-INSERT INTO permissions (name) VALUES('delete_user');
-INSERT INTO permissions (name) VALUES('block_user');
-INSERT INTO permissions (name) VALUES('unblock_user');
-
-
-
+INSERT INTO permissions (name) VALUES('CREATE_ITEM');
+INSERT INTO permissions (name) VALUES('DELETE_ITEM');
+INSERT INTO permissions (name) VALUES('UPLOAD_WITH_XML_ITEM');
+INSERT INTO permissions (name) VALUES('SHOW_ORDER');
+INSERT INTO permissions (name) VALUES('CHANGE_ORDER_STATUS');
+INSERT INTO permissions (name) VALUES('CREATE_ORDER');
+INSERT INTO permissions (name) VALUES('CHANGE_PROFILE');
+INSERT INTO permissions (name) VALUES('DELETE_USER');
+INSERT INTO permissions (name) VALUES('BLOCK_USER');
+INSERT INTO permissions (name) VALUES('UNBLOCK_USER');
 
 INSERT INTO roles (name) VALUES('admin');
 INSERT INTO roles (name) VALUES('user');
 INSERT INTO roles (name) VALUES('customer');
-
 
 INSERT INTO role_permission (role_id,permission_id) VALUES((SELECT id FROM roles WHERE name='admin'),(SELECT id FROM permissions WHERE permissions.name='create_item' ));
 INSERT INTO role_permission (role_id,permission_id) VALUES((SELECT id FROM roles WHERE name='admin'),(SELECT id FROM permissions WHERE permissions.name='delete_item' ));
@@ -40,6 +36,4 @@ INSERT INTO role_permission (role_id,permission_id) VALUES((SELECT id FROM roles
 INSERT INTO role_permission (role_id,permission_id) VALUES((SELECT id FROM roles WHERE name='customer'),(SELECT id FROM permissions WHERE permissions.name ='change_profile'));
 
 
-
-
-INSERT INTO users (email, name, surname, password, role_id) values ('spokeman152@gmail.com','Alexei','Erofeev','1234',1);
+INSERT INTO users (email, name, surname, password, role_id) values ('spokeman152@gmail.com','Alexei','Erofeev','81dc9bdb52d04dc20036dbd8313ed055',1);

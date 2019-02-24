@@ -4,6 +4,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -25,29 +26,6 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }
         return instance;
-    }
-
-    @Override
-    public List<User> findAll(Connection connection) {
-        String query = "SELECT users.id as user_id, email,surname,users.name,password," +
-                "       roles.id as role_id,roles.name as role_name," +
-                "       permissions.id as permission_id,permissions.name" +
-                "       FROM users" +
-                "       JOIN roles ON users.role_id = roles.id and users.id" +
-                "       JOIN role_permission  ON roles.id = role_permission.role_id" +
-                "       JOIN permissions ON role_permission.permission_id =  permissions.id";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<User> users = getAllUsers(resultSet);
-                return users;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Can't find user by id: ");
-            e.getMessage();
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
@@ -161,7 +139,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
             role = new Role(roleId, roleName);
             Long permissionId = resultSet.getLong(8);
-            String permissionName = resultSet.getString(9);
+            Permissions permissionName = Permissions.valueOf(resultSet.getString(9));
             Permission permission = new Permission(permissionId, permissionName);
             permissions.add(permission);
         }
@@ -174,35 +152,6 @@ public class UserRepositoryImpl implements UserRepository {
         return null;
     }
 
-    private List<User> getAllUsers(ResultSet resultSet) throws SQLException {
-        List<Permission> permissions = new ArrayList<>();
-        List<User> users = new ArrayList<>();
-        User user = null;
-        Role role = null;
-        Long oldUserId = null;
-        while (resultSet.next()) {
-            Long userId = resultSet.getLong(1);
-            if (!userId.equals(oldUserId)) {
-                String userEmail = resultSet.getString(2);
-                String userSurname = resultSet.getString(3);
-                String userName = resultSet.getString(4);
-                String userPassword = resultSet.getString(5);
-                user = new User(userId, userEmail, userName, userSurname, userPassword);
-                Long roleId = resultSet.getLong(6);
-                String roleName = resultSet.getString(7);
-                role = new Role();
-                role = new Role(roleId, roleName);
-                Long permissionId = resultSet.getLong(8);
-                String permissionName = resultSet.getString(9);
-                Permission permission = new Permission(permissionId, permissionName);
-                permissions.add(permission);
-            } else {
-                users.add(user);
-                oldUserId = userId;
-            }
 
-        }
-        return users;
-    }
 
 }

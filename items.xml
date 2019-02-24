@@ -25,10 +25,66 @@
     </item>
 
     <item id="11">
-        <name>XBOX</name>
+        <name>mixer</name>
         <description></description>
-        <uniqueNumber>sadas23d23dasdasdasd23asd</uniqueNumber>
-        <price>100.1</price>
+        <uniqueNumber>sadas23d23dasdasdasd23asd9</uniqueNumber>
+        <price>10.1</price>
+    </item>
+
+    <item id="12">
+        <name>phone</name>
+        <description>console</description>
+        <uniqueNumber>sadasd23dasdasdasdasd8</uniqueNumber>
+        <price>150.1</price>
+    </item>
+
+    <item id="13">
+        <name>monitor</name>
+        <description>new brand console</description>
+        <uniqueNumber>sadasdasd23dasdasdasdasd7</uniqueNumber>
+        <price>140.1</price>
+    </item>
+
+    <item id="14">
+        <name>tooth brash</name>
+        <description>portable console</description>
+        <uniqueNumber>sadaa1sd23daasdasdasdasd6</uniqueNumber>
+        <price>20.1</price>
+    </item>
+
+    <item id="15">
+        <name>TV</name>
+        <description></description>
+        <uniqueNumber>sadas23d23dasdasdasd23asd5</uniqueNumber>
+        <price>500.1</price>
+    </item>
+
+    <item id="16">
+        <name>refrigerator</name>
+        <description>console</description>
+        <uniqueNumber>sadasd23dasdasdasdasd4</uniqueNumber>
+        <price>451.1</price>
+    </item>
+
+    <item id="17">
+        <name>smartphone</name>
+        <description>new brand console</description>
+        <uniqueNumber>sadasdasd23dasdasdasdasd3</uniqueNumber>
+        <price>1000.1</price>
+    </item>
+
+    <item id="18">
+        <name>picture</name>
+        <description>portable console</description>
+        <uniqueNumber>sadaa1sd23daasdasdasdasd1</uniqueNumber>
+        <price>40.1</price>
+    </item>
+
+    <item id="19">
+        <name>apple</name>
+        <description></description>
+        <uniqueNumber>sadas23d23dasdasdassfd23asd</uniqueNumber>
+        <price>0.1</price>
     </item>
 
 </items>

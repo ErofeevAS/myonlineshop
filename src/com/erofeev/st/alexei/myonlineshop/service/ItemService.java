@@ -7,15 +7,13 @@ import java.util.List;
 
 public interface ItemService {
 
-    List<Item> getAllItems();
+    List<Item> findItems(int pageNumber, int amount);
 
-    Item addItem(Item item);
+    Item save(Item item);
 
-    Boolean updateItem(Item item);
+    Boolean delete(Item item);
 
-    Boolean deleteItem(Item item);
-
-    Item findItemById(Long id);
+    Item findById(Long id);
 
     Boolean importFromXml(File xml,File xsd);
 

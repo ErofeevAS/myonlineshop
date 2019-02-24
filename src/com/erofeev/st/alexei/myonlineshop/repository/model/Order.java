@@ -1,5 +1,7 @@
 package com.erofeev.st.alexei.myonlineshop.repository.model;
 
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Status;
+
 import java.sql.Date;
 
 public class Order {
@@ -7,6 +9,7 @@ public class Order {
     private Item item;
     private Date createdDate;
     private Integer quantity;
+    private Status status;
 
     public Order() {
     }
@@ -43,6 +46,14 @@ public class Order {
         this.quantity = quantity;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -50,6 +61,7 @@ public class Order {
                 ", item=" + item +
                 ", createdDate=" + createdDate +
                 ", quantity=" + quantity +
+                ", status=" + status +
                 '}';
     }
 }

@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserService {
     User findById(Long id, boolean isLazy);
 
-    List<User> findAllUser(boolean isLazy);
+
 }

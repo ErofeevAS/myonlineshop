@@ -1,13 +1,15 @@
 package com.erofeev.st.alexei.myonlineshop.repository.model;
 
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
+
 public class Permission {
     private Long id;
-    private String name;
+    private Permissions name;
 
     public Permission() {
     }
 
-    public Permission(Long id, String name) {
+    public Permission(Long id, Permissions name) {
         this.id = id;
         this.name = name;
     }
@@ -20,11 +22,11 @@ public class Permission {
         this.id = id;
     }
 
-    public String getName() {
+    public Permissions getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Permissions name) {
         this.name = name;
     }
 
