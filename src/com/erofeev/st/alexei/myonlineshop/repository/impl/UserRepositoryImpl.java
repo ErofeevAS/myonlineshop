@@ -5,10 +5,8 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +52,32 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(Connection connection, User user) {
-        return null;
+        String query = "INSERT INTO users (email,surname,name,password,role_id) VALUES(?,?,?,?,?)";
+        String email = user.getEmail();
+        String name = user.getFirstName();
+        String surName = user.getLastName();
+        String password = user.getPassword();
+        Long roleId = user.getRole().getId();
+        try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, email);
+            ps.setString(2, surName);
+            ps.setString(3, name);
+            ps.setString(4, password);
+            ps.setLong(5, roleId);
+            int amountOfChange = ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (amountOfChange > 0) {
+                    while (rs.next()) {
+                        user.setId(rs.getLong(1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Can't add item: " + user);
+            e.getMessage();
+            e.printStackTrace();
+        }
+        return user;
     }
 
     @Override
@@ -68,7 +91,26 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByEmail(Connection connection, String email) {
+    public User findByEmail(Connection connection, String email, boolean isLazy) {
+        String query = "SELECT users.id as user_id, email,surname,users.name,password," +
+                "       roles.id as role_id,roles.name as role_name," +
+                "       permissions.id as permission_id,permissions.name" +
+                "       FROM users" +
+                "       JOIN roles ON users.role_id = roles.id and users.email=?" +
+                "       JOIN  role_permission  ON roles.id = role_permission.role_id" +
+                "       JOIN  permissions ON role_permission.permission_id =  permissions.id";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, email);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return getUser(resultSet, isLazy);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Can't find user by email: ");
+            e.getMessage();
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -128,7 +170,8 @@ public class UserRepositoryImpl implements UserRepository {
             user.setRole(role);
             return user;
         } else
-            return null;
+            System.out.println("User not found");
+        return null;
     }
 
     private List<User> getAllUsers(ResultSet resultSet) throws SQLException {

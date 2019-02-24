@@ -14,7 +14,7 @@ public interface UserRepository {
 
     Boolean delete(Connection connection, User user);
 
-    User findByEmail(Connection connection, String email);
+    User findByEmail(Connection connection, String email, boolean isLazy);
 
     User findById(Connection connection, Long id, boolean isLazy);
 }
