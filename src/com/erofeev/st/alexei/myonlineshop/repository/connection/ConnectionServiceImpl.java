@@ -41,10 +41,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         String userName = configurationManager.getProperty(ConfigurationManager.DATA_BASE_USERNAME);
         String password = configurationManager.getProperty(ConfigurationManager.DATA_BASE_PASSWORD);
         String dataBaseUrl = configurationManager.getProperty(ConfigurationManager.DATA_BASE_URL);
-//        String useUnicode = "true";
-//        String useJDBCCompliantTimezoneShift = "true";
-//        String useLegacyDatetimeCode = "false";
-        String serverTimezone = "UTC";
+        String serverTimezone = configurationManager.getProperty(ConfigurationManager.DATA_BASE_SERVERTIMEZONE);
 
         properties.setProperty("user", userName);
         properties.setProperty("password", password);

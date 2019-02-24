@@ -11,6 +11,7 @@ public class ConfigurationManager {
     public static final String DATA_BASE_URL = "database.url";
     public static final String DATA_BASE_USERNAME = "database.username";
     public static final String DATA_BASE_PASSWORD = "database.password";
+    public static final String DATA_BASE_SERVERTIMEZONE = "database.serverTimezone";
 
     private ConfigurationManager() {
     }
