@@ -41,9 +41,9 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
         User user;
         try (Connection connection = connectionService.getConnection()) {
             try {
+                connection.setAutoCommit(false);
                 String email = userLoginDTO.getEmail();
                 passwordFromWeb = userLoginDTO.getPassword();
-                connection.setAutoCommit(false);
                 user = userRepository.findByEmail(connection, email, false);
                 if (user == null) {
                     return false;
@@ -52,12 +52,8 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                 String passwordFromDataBase = user.getPassword();
                 return comparePasswords(passwordFromWeb, passwordFromDataBase);
             } catch (SQLException e) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    System.out.println(e1.getMessage());
-                    e1.printStackTrace();
-                }
+                connection.rollback();
+                System.out.println(e.getMessage());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -83,7 +79,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                     userRegistrationDTO.setPassword(hashedPassword);
                     User user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
                     Role role = new Role();
-                    role.setId(2L);
+                    role.setId(2L); // вынести в параметры метода
                     user.setRole(role);
                     userRepository.save(connection, user);
                 } else {
