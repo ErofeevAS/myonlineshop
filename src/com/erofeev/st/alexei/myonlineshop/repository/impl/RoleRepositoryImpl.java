@@ -23,8 +23,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             }
             return roles;
         } catch (SQLException e) {
-            System.out.println("Can't open connection when trying find all roles");
-            e.getMessage();
+            System.out.println("Can't open connection when trying find all roles: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -45,8 +44,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             }
             return roles;
         } catch (SQLException e) {
-            System.out.println("Can't create statement when trying find all roles");
-            e.getMessage();
+            System.out.println("Can't create statement when trying find all roles: " + e.getMessage());
             e.printStackTrace();
         }
         return null;

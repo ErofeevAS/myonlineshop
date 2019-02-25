@@ -67,8 +67,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't add item: " + item);
-            e.getMessage();
+            System.out.println("Can't add item: " + item + " " + e.getMessage());
             e.printStackTrace();
         }
         return item;
@@ -98,8 +97,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Can't save list of items");
-            e.getMessage();
+            System.out.println("Can't save list of items: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -122,8 +120,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't update item: " + item);
-            e.getMessage();
+            System.out.println("Can't update item: " + item + " " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -138,8 +135,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't delete item: " + item);
-            e.getMessage();
+            System.out.println("Can't delete item: " + item + " " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -158,8 +154,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             }
             return item;
         } catch (SQLException e) {
-            System.out.println("Can't find item by id: " + id);
-            e.getMessage();
+            System.out.println("Can't find item by id: " + e.getMessage());
             e.printStackTrace();
         }
         return null;

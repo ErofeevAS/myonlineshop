@@ -2,7 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.app;
 
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.*;
-import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.impl.*;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
@@ -35,7 +35,7 @@ public class Runner {
         UserDTO userDTO = userService.findById(1L, false);
         System.out.println(userDTO);
         Item item = itemService.findById(13L);
-        User user1 = UserConverterImpl.fromDTO(userDTO);
+        User user1 = UserConverter.fromDTO(userDTO);
         orderService.create(user1,item,2);
 
 

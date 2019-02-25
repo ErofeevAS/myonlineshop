@@ -1,6 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
-import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
@@ -8,7 +8,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
 import com.erofeev.st.alexei.myonlineshop.service.SecureService;
-import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
@@ -40,15 +40,27 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
         String passwordFromWeb;
         User user;
         try (Connection connection = connectionService.getConnection()) {
-            String email = userLoginDTO.getEmail();
-            passwordFromWeb = userLoginDTO.getPassword();
-            user = userRepository.findByEmail(connection, email, false);
-            if (user == null) {
-                return false;
+            try {
+                String email = userLoginDTO.getEmail();
+                passwordFromWeb = userLoginDTO.getPassword();
+                connection.setAutoCommit(false);
+                user = userRepository.findByEmail(connection, email, false);
+                if (user == null) {
+                    return false;
+                }
+                connection.commit();
+                String passwordFromDataBase = user.getPassword();
+                return comparePasswords(passwordFromWeb, passwordFromDataBase);
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    System.out.println(e1.getMessage());
+                    e1.printStackTrace();
+                }
             }
-            String passwordFromDataBase = user.getPassword();
-            return comparePasswords(passwordFromWeb, passwordFromDataBase);
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -64,21 +76,27 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
             return false;
         }
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            if (userRepository.findByEmail(connection, email, false) == null) {
-                String hashedPassword = secureService.hashPassword(userRegistrationDTO.getPassword());
-                userRegistrationDTO.setPassword(hashedPassword);
-                User user = UserConverterImpl.fromUserRegistrationDTO(userRegistrationDTO);
-                Role role = new Role();
-                role.setId(2L);
-                user.setRole(role);
-                userRepository.save(connection, user);
+            try {
+                connection.setAutoCommit(false);
+                if (userRepository.findByEmail(connection, email, false) == null) {
+                    String hashedPassword = secureService.hashPassword(userRegistrationDTO.getPassword());
+                    userRegistrationDTO.setPassword(hashedPassword);
+                    User user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
+                    Role role = new Role();
+                    role.setId(2L);
+                    user.setRole(role);
+                    userRepository.save(connection, user);
+                } else {
+                    System.out.println("Email reserved");
+                }
                 connection.commit();
-            } else {
-                System.out.println("Email reserved");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+                connection.rollback();
             }
-
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return null;

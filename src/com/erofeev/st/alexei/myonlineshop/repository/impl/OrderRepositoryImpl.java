@@ -47,8 +47,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't save order: " + order);
-            e.getMessage();
+            System.out.println("Can't save order: "   + e.getMessage());
             e.printStackTrace();
         }
         return order;
@@ -72,8 +71,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't delete item: " + order);
-            e.getMessage();
+            System.out.println("Can't delete item: " + order + " " + e.getMessage());
             e.printStackTrace();
         }
         return false;

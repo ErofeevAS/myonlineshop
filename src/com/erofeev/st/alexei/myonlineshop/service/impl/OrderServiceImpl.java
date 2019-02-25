@@ -1,6 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
-import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.OrderRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.OrderRepositoryImpl;
@@ -15,7 +15,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.SQLException;
 import java.util.Calendar;
-
 
 
 public class OrderServiceImpl implements OrderService {
@@ -35,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order create(User user, Item item,int quantity) {
+    public Order create(User user, Item item, int quantity) {
         Date createdDate = new Date(Calendar.getInstance().getTime().getTime());
         Timestamp param = new Timestamp(createdDate.getTime());
         Order order = new Order();

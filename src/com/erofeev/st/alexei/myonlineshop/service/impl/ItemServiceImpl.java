@@ -1,13 +1,13 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
-import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ItemRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
-import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 import com.erofeev.st.alexei.myonlineshop.service.util.UniqueNumberGenerator;
@@ -43,8 +43,7 @@ public class ItemServiceImpl implements ItemService {
         try (Connection connection = connectionService.getConnection()) {
             items = itemRepository.findAll(connection, pageNumber, amount);
         } catch (SQLException e) {
-            System.out.println("Can't open connection");
-            e.getMessage();
+            System.out.println("Can't open connection: " + e.getMessage());
             e.printStackTrace();
         }
         return items;
@@ -54,11 +53,11 @@ public class ItemServiceImpl implements ItemService {
     public Item save(ItemDTO itemDTO) {
         Item returnedItem = null;
         try (Connection connection = connectionService.getConnection()) {
-            Item item = ItemConverterImpl.fromItem(itemDTO);
+            Item item = ItemConverter.fromItem(itemDTO);
             item.setUniqueNumber(UniqueNumberGenerator.generateUniqueNumber());
             returnedItem = itemRepository.save(connection, item);
         } catch (SQLException e) {
-            System.out.println("Can't open connection when try save item");
+            System.out.println("Can't open connection when try save item: " + e.getMessage());
             e.printStackTrace();
         }
         return returnedItem;
@@ -67,13 +66,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Boolean delete(ItemDTO itemDTO) {
         try (Connection connection = connectionService.getConnection()) {
-            Item item = ItemConverterImpl.fromItem(itemDTO);
+            Item item = ItemConverter.fromItem(itemDTO);
             if (itemRepository.delete(connection, item)) {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("Can't open connection when try delete item");
-            e.getMessage();
+            System.out.println("Can't open connection when try delete item: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -85,8 +83,7 @@ public class ItemServiceImpl implements ItemService {
             Item foundItem = itemRepository.findById(connection, id);
             return foundItem;
         } catch (SQLException e) {
-            System.out.println("Can't open connection when trying find item by id");
-            e.getMessage();
+            System.out.println("Can't open connection when trying find item by id: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -96,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     public Boolean importFromXml(File xml, File xsd) {
         XMLService xmlService = XMLServiceImpl.getInstance();
         List<ItemXML> itemXMLS = xmlService.importItemsFromFile(xml, xsd);
-        List<Item> items = ItemConverterImpl.convertItemsXMLtoItems(itemXMLS);
+        List<Item> items = ItemConverter.convertItemsXMLtoItems(itemXMLS);
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
@@ -111,13 +108,12 @@ public class ItemServiceImpl implements ItemService {
                     connection.rollback();
                     System.out.println("Transaction was rollbacked");
                 } catch (SQLException e1) {
-                    e1.getMessage();
+                    System.out.println(e1.getMessage());
                     e1.printStackTrace();
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't establish a connection");
-            e.getMessage();
+            System.out.println("Can't establish a connection: " + e.getMessage());
             e.printStackTrace();
         }
         return false;

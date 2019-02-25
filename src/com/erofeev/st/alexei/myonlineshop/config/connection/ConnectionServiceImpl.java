@@ -1,7 +1,7 @@
 package com.erofeev.st.alexei.myonlineshop.config.connection;
 
 import com.erofeev.st.alexei.myonlineshop.config.ConfigurationManager;
-import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

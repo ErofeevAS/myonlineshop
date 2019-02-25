@@ -27,17 +27,16 @@ public class DataBaseCreatorRepositoryImpl implements DataBaseCreatorRepository 
     @Override
     public Boolean executeQuery(Connection connection, String[] queries) {
 
-            try (Statement statement = connection.createStatement()) {
-                for (String query : queries) {
-                    statement.executeUpdate(query);
-                }
-
-                return true;
-            } catch (SQLException e) {
-                System.out.println("Can't create database layer repo");
-                e.getMessage();
-                e.printStackTrace();
+        try (Statement statement = connection.createStatement()) {
+            for (String query : queries) {
+                statement.executeUpdate(query);
             }
+
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Can't create database layer repo: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         return false;
     }

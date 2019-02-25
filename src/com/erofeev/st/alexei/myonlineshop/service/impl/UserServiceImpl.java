@@ -1,12 +1,12 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
-import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.service.UserService;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 
 import java.sql.Connection;
@@ -37,9 +37,10 @@ public class UserServiceImpl implements UserService {
         User user;
         try (Connection connection = connectionService.getConnection()) {
             user = userRepository.findById(connection, id, isLazy);
-            UserDTO userDTO = UserConverterImpl.toDTO(user);
+            UserDTO userDTO = UserConverter.toDTO(user);
             return userDTO;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return null;

@@ -6,7 +6,7 @@ import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
-public class UserConverterImpl {
+public class UserConverter {
 
 
     public static User fromUserRegistrationDTO(UserRegistrationDTO userDTO) {

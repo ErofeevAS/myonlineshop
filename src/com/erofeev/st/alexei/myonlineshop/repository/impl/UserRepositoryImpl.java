@@ -51,8 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't add item: " + user);
-            e.getMessage();
+            System.out.println("Can't add item: " + user + " " + e.getMessage());
             e.printStackTrace();
         }
         return user;
@@ -85,8 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Can't find user by email: ");
-            e.getMessage();
+            System.out.println("Can't find user by email: "  + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -110,8 +108,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Can't find user by id: ");
-            e.getMessage();
+            System.out.println("Can't find user by id: " + e.getMessage());
             e.printStackTrace();
         }
         return null;

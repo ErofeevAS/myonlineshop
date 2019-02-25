@@ -35,7 +35,7 @@ public class SecureServiceImpl implements SecureService {
             }
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return generatedPassword;

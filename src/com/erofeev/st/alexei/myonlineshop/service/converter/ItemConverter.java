@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemConverterImpl  {
+public class ItemConverter {
 
     public static Item convertItemXMLtoItem(ItemXML itemXML) {
         Long id = itemXML.getId();

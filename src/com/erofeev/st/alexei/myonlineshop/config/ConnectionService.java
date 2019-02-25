@@ -1,4 +1,4 @@
-package com.erofeev.st.alexei.myonlineshop.repository;
+package com.erofeev.st.alexei.myonlineshop.config;
 
 import java.sql.Connection;
 
