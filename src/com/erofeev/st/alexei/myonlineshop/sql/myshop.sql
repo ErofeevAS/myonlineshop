@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS profiles
 CREATE TABLE IF NOT EXISTS orders
 (
   id       BIGINT auto_increment PRIMARY KEY,
-  created  date,
+  created  TIMESTAMP,
   quantity int,
   status   ENUM ('NEW', 'REVIEWING', 'IN_PROCESS', 'DELIVERED') NOT NULL,
   user_id  BIGINT,

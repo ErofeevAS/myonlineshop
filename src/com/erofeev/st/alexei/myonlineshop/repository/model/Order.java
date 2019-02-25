@@ -3,11 +3,12 @@ package com.erofeev.st.alexei.myonlineshop.repository.model;
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Status;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Order {
     private User user;
     private Item item;
-    private Date createdDate;
+    private Timestamp createdDate;
     private Integer quantity;
     private Status status;
 
@@ -30,11 +31,11 @@ public class Order {
         this.item = item;
     }
 
-    public Date getCreatedDate() {
+    public Timestamp getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
     }
 

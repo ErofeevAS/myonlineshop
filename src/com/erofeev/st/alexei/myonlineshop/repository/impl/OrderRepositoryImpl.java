@@ -29,11 +29,11 @@ public class OrderRepositoryImpl implements OrderRepository {
         String query = "INSERT INTO orders (created, quantity, status, user_id, item_id) VALUES(?,?,?,?,?)";
         Long itemId = order.getItem().getId();
         Long userId = order.getUser().getId();
-        Date createdDate = order.getCreatedDate();
+        Timestamp createdDate = order.getCreatedDate();
         int quantity = order.getQuantity();
         Status status = order.getStatus();
         try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setDate(1, createdDate);
+            ps.setTimestamp(1, createdDate);
             ps.setInt(2, quantity);
             ps.setString(3, status.toString());
             ps.setLong(4, userId);
@@ -62,13 +62,13 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Boolean update(Connection connection, Order order, Status status) {
         Long userId = order.getUser().getId();
-        Date date = order.getCreatedDate();
+        Timestamp date = order.getCreatedDate();
         String query = "UPDATE items  SET status = ? WHERE (user_id=? and created=?)";
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, status.toString());
             ps.setLong(2, userId);
-            ps.setDate(3, date);
+            ps.setTimestamp(3, date);
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
