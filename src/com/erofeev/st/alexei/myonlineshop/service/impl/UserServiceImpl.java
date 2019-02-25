@@ -6,6 +6,8 @@ import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.service.UserService;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
+import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,11 +34,12 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     @Override
-    public User findById(Long id, boolean isLazy) {
+    public UserDTO findById(Long id, boolean isLazy) {
         User user;
         try (Connection connection = connectionService.getConnection()) {
             user = userRepository.findById(connection, id, isLazy);
-            return user;
+            UserDTO userDTO = UserConverterImpl.toDTO(user);
+            return userDTO;
         } catch (SQLException e) {
             e.printStackTrace();
         }

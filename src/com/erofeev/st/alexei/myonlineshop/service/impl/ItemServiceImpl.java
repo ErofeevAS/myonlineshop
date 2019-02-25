@@ -8,6 +8,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.service.XMLService;
 import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverterImpl;
+import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemXML;
 import com.erofeev.st.alexei.myonlineshop.service.util.UniqueNumberGenerator;
 
@@ -49,9 +50,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item save(Item item) {
+    public Item save(ItemDTO itemDTO) {
         Item returnedItem = null;
         try (Connection connection = connectionService.getConnection()) {
+            Item item = ItemConverterImpl.fromItem(itemDTO);
             item.setUniqueNumber(UniqueNumberGenerator.generateUniqueNumber());
             returnedItem = itemRepository.save(connection, item);
         } catch (SQLException e) {
@@ -62,8 +64,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Boolean delete(Item item) {
+    public Boolean delete(ItemDTO itemDTO) {
         try (Connection connection = connectionService.getConnection()) {
+            Item item = ItemConverterImpl.fromItem(itemDTO);
             if (itemRepository.delete(connection, item)) {
                 return true;
             }
@@ -93,9 +96,29 @@ public class ItemServiceImpl implements ItemService {
         XMLService xmlService = XMLServiceImpl.getInstance();
         List<ItemXML> itemXMLS = xmlService.importItemsFromFile(xml, xsd);
         List<Item> items = ItemConverterImpl.convertItemsXMLtoItems(itemXMLS);
-        Connection connection = connectionService.getConnection();
-        itemRepository.saveList(connection, items);
-        System.out.println("Items was saved");
-        return true;
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                itemRepository.saveList(connection, items);
+                connection.commit();
+                System.out.println("Items was saved");
+                return true;
+            } catch (SQLException e) {
+                e.getMessage();
+                e.printStackTrace();
+                try {
+                    connection.rollback();
+                    System.out.println("Transaction was rollbacked");
+                } catch (SQLException e1) {
+                    e1.getMessage();
+                    e1.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Can't establish a connection");
+            e.getMessage();
+            e.printStackTrace();
+        }
+        return false;
     }
 }

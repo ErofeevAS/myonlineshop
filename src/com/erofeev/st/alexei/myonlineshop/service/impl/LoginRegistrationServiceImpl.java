@@ -68,7 +68,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
             if (userRepository.findByEmail(connection, email, false) == null) {
                 String hashedPassword = secureService.hashPassword(userRegistrationDTO.getPassword());
                 userRegistrationDTO.setPassword(hashedPassword);
-                User user = UserConverterImpl.fromDTO(userRegistrationDTO);
+                User user = UserConverterImpl.fromUserRegistrationDTO(userRegistrationDTO);
                 Role role = new Role();
                 role.setId(2L);
                 user.setRole(role);

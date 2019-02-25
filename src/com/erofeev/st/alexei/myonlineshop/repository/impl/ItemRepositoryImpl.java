@@ -78,7 +78,6 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Boolean saveList(Connection connection, List<Item> items) {
         String query = " INSERT INTO items VALUES(?,?,?,?,?,?)";
         try {
-            connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 for (Item item : items) {
                     Long id = item.getId();
@@ -92,11 +91,9 @@ public class ItemRepositoryImpl implements ItemRepository {
                     preparedStatement.setString(4, uniqueNumber);
                     preparedStatement.setBigDecimal(5, price);
                     preparedStatement.setBoolean(6, false);
-
                     preparedStatement.addBatch();
                 }
                 preparedStatement.executeBatch();
-                connection.commit();
                 return true;
             }
 

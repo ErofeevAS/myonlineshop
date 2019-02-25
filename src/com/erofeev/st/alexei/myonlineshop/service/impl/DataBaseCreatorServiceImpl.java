@@ -9,6 +9,7 @@ import com.erofeev.st.alexei.myonlineshop.service.FileService;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DataBaseCreatorServiceImpl implements DataBaseCreatorService {
     private static volatile DataBaseCreatorService instance = null;
@@ -33,9 +34,13 @@ public class DataBaseCreatorServiceImpl implements DataBaseCreatorService {
     @Override
     public Boolean createDataBaseFromFile(File file) {
         System.out.println("Start creating dataBase");
-        Connection connection = connectionService.getConnection();
-        String[] queries = fileService.getQueryFromFile(file);
-        dataBaseCreatorRepository.executeQuery(connection, queries);
+        try (Connection connection = connectionService.getConnection()) {
+            String[] queries = fileService.getQueryFromFile(file);
+            dataBaseCreatorRepository.executeQuery(connection, queries);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
         System.out.println("Database was created");
         return true;
     }
