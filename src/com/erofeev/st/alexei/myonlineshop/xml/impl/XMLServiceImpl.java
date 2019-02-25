@@ -1,8 +1,8 @@
-package com.erofeev.st.alexei.myonlineshop.service.impl;
+package com.erofeev.st.alexei.myonlineshop.xml.impl;
 
-import com.erofeev.st.alexei.myonlineshop.service.model.ItemXML;
-import com.erofeev.st.alexei.myonlineshop.service.model.ItemsXML;
-import com.erofeev.st.alexei.myonlineshop.service.XMLService;
+import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
+import com.erofeev.st.alexei.myonlineshop.xml.model.ItemsXML;
+import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
 import com.erofeev.st.alexei.myonlineshop.service.util.XMLValidatorUtil;
 
 import javax.xml.bind.JAXBContext;

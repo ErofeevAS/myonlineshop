@@ -1,10 +1,12 @@
-package com.erofeev.st.alexei.myonlineshop.repository.connection;
+package com.erofeev.st.alexei.myonlineshop.config.connection;
+
+import com.erofeev.st.alexei.myonlineshop.config.ConfigurationManager;
 
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-public class ConfigurationManager {
-    private static volatile ConfigurationManager instance = null;
+public class ConfigurationManagerImpl implements ConfigurationManager {
+    private static volatile ConfigurationManagerImpl instance = null;
     private ResourceBundle resourceBundle;
     public static final String DATA_BASE_CONFIG = "config";
     public static final String DATA_BASE_DRIVER_NAME = "database.driver.name";
@@ -13,14 +15,14 @@ public class ConfigurationManager {
     public static final String DATA_BASE_PASSWORD = "database.password";
     public static final String DATA_BASE_SERVERTIMEZONE = "database.serverTimezone";
 
-    private ConfigurationManager() {
+    private ConfigurationManagerImpl() {
     }
 
-    public static ConfigurationManager getInstance() {
+    public static ConfigurationManagerImpl getInstance() {
         if (instance == null) {
-            synchronized (ConfigurationManager.class) {
+            synchronized (ConfigurationManagerImpl.class) {
                 if (instance == null) {
-                    instance = new ConfigurationManager();
+                    instance = new ConfigurationManagerImpl();
                     instance.resourceBundle = PropertyResourceBundle.getBundle(DATA_BASE_CONFIG);
                 }
             }

@@ -1,5 +1,6 @@
-package com.erofeev.st.alexei.myonlineshop.repository.connection;
+package com.erofeev.st.alexei.myonlineshop.config.connection;
 
+import com.erofeev.st.alexei.myonlineshop.config.ConfigurationManager;
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
 
 import java.sql.Connection;
@@ -7,13 +8,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl.*;
+
 public class ConnectionServiceImpl implements ConnectionService {
     private static volatile ConnectionService instance = null;
-    private static ConfigurationManager configurationManager = ConfigurationManager.getInstance();
+    private static ConfigurationManager configurationManager = ConfigurationManagerImpl.getInstance();
     private ConnectionServiceImpl() {
         System.out.println("loading jdbc driver...");
         try {
-            String jdbcDriverName = ConfigurationManager.DATA_BASE_DRIVER_NAME;
+            String jdbcDriverName = DATA_BASE_DRIVER_NAME;
             Class.forName(configurationManager.getProperty(jdbcDriverName));
             System.out.println("loading jdbc driver successful");
         } catch (ClassNotFoundException e) {
@@ -38,14 +41,10 @@ public class ConnectionServiceImpl implements ConnectionService {
     public Connection getConnection() {
         System.out.println("Initialization connection...");
         Properties properties = new Properties();
-        String userName = configurationManager.getProperty(ConfigurationManager.DATA_BASE_USERNAME);
-        String password = configurationManager.getProperty(ConfigurationManager.DATA_BASE_PASSWORD);
-        String dataBaseUrl = configurationManager.getProperty(ConfigurationManager.DATA_BASE_URL);
-        String serverTimezone = configurationManager.getProperty(ConfigurationManager.DATA_BASE_SERVERTIMEZONE);
-
-        properties.setProperty("user", userName);
-        properties.setProperty("password", password);
-        properties.setProperty("serverTimezone", serverTimezone);
+        String dataBaseUrl = configurationManager.getProperty(DATA_BASE_URL);
+        properties.setProperty("user", configurationManager.getProperty(DATA_BASE_USERNAME));
+        properties.setProperty("password", configurationManager.getProperty(DATA_BASE_PASSWORD));
+        properties.setProperty("serverTimezone",  configurationManager.getProperty(DATA_BASE_SERVERTIMEZONE));
 
         Connection connection = null;
         try {

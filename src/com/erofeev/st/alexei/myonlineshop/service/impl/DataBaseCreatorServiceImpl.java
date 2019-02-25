@@ -2,7 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.DataBaseCreatorRepository;
-import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.DataBaseCreatorRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.service.DataBaseCreatorService;
 import com.erofeev.st.alexei.myonlineshop.service.FileService;

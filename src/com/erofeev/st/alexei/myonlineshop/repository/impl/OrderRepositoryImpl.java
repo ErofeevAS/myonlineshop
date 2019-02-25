@@ -35,7 +35,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             ps.setTimestamp(1, createdDate);
             ps.setInt(2, quantity);
-            ps.setString(3, status.toString());
+            ps.setString(3, status.name());
             ps.setLong(4, userId);
             ps.setLong(5, itemId);
             int amountOfChange = ps.executeUpdate();
@@ -66,7 +66,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         String query = "UPDATE items  SET status = ? WHERE (user_id=? and created=?)";
 
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, status.toString());
+            ps.setString(1, status.name());
             ps.setLong(2, userId);
             ps.setTimestamp(3, date);
             ps.executeUpdate();

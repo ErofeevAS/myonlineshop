@@ -2,7 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.OrderRepository;
-import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.OrderRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Order;
@@ -13,7 +13,6 @@ import com.erofeev.st.alexei.myonlineshop.service.OrderService;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.sql.Time;
 import java.sql.SQLException;
 import java.util.Calendar;
 

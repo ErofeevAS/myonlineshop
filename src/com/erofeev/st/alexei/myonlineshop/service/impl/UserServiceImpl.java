@@ -1,7 +1,7 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
-import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.service.UserService;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
@@ -11,7 +11,6 @@ import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 public class UserServiceImpl implements UserService {
     private static volatile UserService instance = null;

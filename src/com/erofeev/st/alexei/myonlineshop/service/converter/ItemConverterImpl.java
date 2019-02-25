@@ -2,7 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service.converter;
 
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.ItemXML;
+import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

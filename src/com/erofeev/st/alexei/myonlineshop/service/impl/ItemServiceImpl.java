@@ -2,15 +2,16 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
-import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ItemRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
-import com.erofeev.st.alexei.myonlineshop.service.XMLService;
+import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
 import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverterImpl;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.ItemXML;
+import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 import com.erofeev.st.alexei.myonlineshop.service.util.UniqueNumberGenerator;
+import com.erofeev.st.alexei.myonlineshop.xml.impl.XMLServiceImpl;
 
 import java.io.File;
 import java.sql.Connection;

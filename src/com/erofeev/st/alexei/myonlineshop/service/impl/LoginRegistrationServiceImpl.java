@@ -2,7 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
-import com.erofeev.st.alexei.myonlineshop.repository.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
