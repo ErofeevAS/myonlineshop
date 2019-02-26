@@ -1,8 +1,11 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
+import com.erofeev.st.alexei.myonlineshop.repository.RoleRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
+import com.erofeev.st.alexei.myonlineshop.repository.impl.RoleRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
@@ -20,6 +23,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
     private ConnectionService connectionService = ConnectionServiceImpl.getInstance();
     private UserRepository userRepository = UserRepositoryImpl.getInstance();
     private SecureService secureService = SecureServiceImpl.getInstance();
+    private RoleRepository roleRepository = RoleRepositoryImpl.getInstance();
 
     private LoginRegistrationServiceImpl() {
     }
@@ -63,7 +67,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
     }
 
     @Override
-    public Boolean registrationUser(UserRegistrationDTO userRegistrationDTO) {
+    public Boolean registrationUser(UserRegistrationDTO userRegistrationDTO) throws RepositoryException {
         String email = userRegistrationDTO.getEmail();
         String password = userRegistrationDTO.getPassword();
         String repeatedPassword = userRegistrationDTO.getRepeatedPassword();
@@ -78,8 +82,8 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                     String hashedPassword = secureService.hashPassword(userRegistrationDTO.getPassword());
                     userRegistrationDTO.setPassword(hashedPassword);
                     User user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
-                    Role role = new Role();
-                    role.setId(2L); // вынести в параметры метода
+                    String roleName = userRegistrationDTO.getRole();
+                    Role role = roleRepository.findByName(connection, roleName);
                     user.setRole(role);
                     userRepository.save(connection, user);
                 } else {

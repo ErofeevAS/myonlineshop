@@ -55,9 +55,9 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS profiles
 (
   id        BIGINT auto_increment PRIMARY KEY,
-  address   VARCHAR(255),
-  telephone VARCHAR(255),
-  user_id   BIGINT
+  address   VARCHAR(255) NOT NULL ,
+  telephone VARCHAR(255) NOT NULL ,
+  user_id   BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS orders

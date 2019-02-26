@@ -1,18 +1,30 @@
 package com.erofeev.st.alexei.myonlineshop.service.model;
 
+import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
+
 public class UserRegistrationDTO {
     private String email;
     private String password;
     private String repeatedPassword;
     private String firstName;
     private String lastName;
+    private String role;
 
-    public UserRegistrationDTO(String email, String password, String repeatedPassword, String firstName, String lastName) {
+    public UserRegistrationDTO(String email, String password, String repeatedPassword, String firstName, String lastName, String role) {
         this.email = email;
         this.password = password;
         this.repeatedPassword = repeatedPassword;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getEmail() {

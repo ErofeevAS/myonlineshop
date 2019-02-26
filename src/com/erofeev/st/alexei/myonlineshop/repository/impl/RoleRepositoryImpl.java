@@ -1,6 +1,7 @@
 package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.RoleRepository;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
@@ -10,44 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoleRepositoryImpl implements RoleRepository {
-    @Override
-    public List<Role> findAll(Connection connection) {
-        List<Role> roles;
-        String query = "SELECT * FROM roles";
-        try (Statement statement = connection.createStatement()) {
-            roles = new ArrayList<>();
-            try (ResultSet rs = statement.executeQuery(query)) {
-                while (rs.next()) {
-                    roles.add(getRole(rs));
-                }
-            }
-            return roles;
-        } catch (SQLException e) {
-            System.out.println("Can't open connection when trying find all roles: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    private static volatile RoleRepository instance = null;
+
+    private RoleRepositoryImpl() {
     }
 
-    @Override
-    public List<Role> findAllFull(Connection connection) {
-        String query = "SELECT roles.id as role_id,roles.name as role_name,permissions.id as permission_id,permissions.name FROM roles\n" +
-                "JOIN  role_permission  ON roles.id = role_permission.role_id\n" +
-                "JOIN  permissions ON role_permission.permission_id =  permissions.id;";
-
-        List<Role> roles = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet rs = statement.executeQuery(query)) {
-                while (rs.next()) {
-
+    public static RoleRepository getInstance() {
+        if (instance == null) {
+            synchronized (RoleRepository.class) {
+                if (instance == null) {
+                    instance = new RoleRepositoryImpl();
                 }
             }
-            return roles;
-        } catch (SQLException e) {
-            System.out.println("Can't create statement when trying find all roles: " + e.getMessage());
-            e.printStackTrace();
         }
-        return null;
+        return instance;
     }
 
     @Override
@@ -66,21 +43,54 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public Role findByName(Connection connection, String name) {
-        return null;
+    public Role findByName(Connection connection, String name) throws RepositoryException {
+        String query = "SELECT roles.id as role_id,roles.name as role_name," +
+                "       permissions.id as permission_id,permissions.name" +
+                "      FROM roles" +
+                "      JOIN role_permission ON roles.id = role_permission.role_id" +
+                "      JOIN permissions on role_permission.permission_id = permissions.id where  roles.name =?;";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                Role role = getRole(rs);
+                return role;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RepositoryException(e);
+        }
     }
 
     @Override
-    public Role findById(Connection connection, Long id) {
-        return null;
+    public Role findById(Connection connection, Long id) throws RepositoryException {
+        String query = "SELECT * FROM roles WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                Role role = getRole(rs);
+                return role;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RepositoryException(e);
+        }
     }
 
     private Role getRole(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong(1);
-        String name = resultSet.getString(2);
+        List<Permission> permissions = new ArrayList<>();
         Role role = new Role();
-        role.setId(id);
-        role.setName(name);
+        while (resultSet.next()) {
+            Long id = resultSet.getLong(1);
+            String name = resultSet.getString(2);
+            Permission permission = new Permission();
+            permission.setId(resultSet.getLong(3));
+            permission.setName(Permissions.valueOf(resultSet.getString(4)));
+            role.setId(id);
+            role.setName(name);
+            role.addPermission(permission);
+        }
         return role;
     }
 

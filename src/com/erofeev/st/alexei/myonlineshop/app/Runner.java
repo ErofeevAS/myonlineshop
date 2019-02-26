@@ -1,5 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.app;
 
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.*;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
@@ -7,6 +8,7 @@ import com.erofeev.st.alexei.myonlineshop.service.impl.*;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
 import java.io.File;
 
@@ -38,7 +40,12 @@ public class Runner {
         User user1 = UserConverter.fromDTO(userDTO);
         orderService.create(user1,item,2);
 
-
+        UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO("new@gmail.com","1234","1234","john","smith","seller");
+        try {
+            loginRegistrationService.registrationUser(userRegistrationDTO);
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
 
 
 
