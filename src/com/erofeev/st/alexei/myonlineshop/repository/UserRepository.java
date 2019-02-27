@@ -1,5 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.repository;
 
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 
 import java.sql.Connection;
@@ -9,7 +10,7 @@ public interface UserRepository {
 
     User save(Connection connection, User user);
 
-    User update(Connection connection, User user);
+    Integer update(Connection connection, User user) throws RepositoryException;
 
     Boolean delete(Connection connection, User user);
 

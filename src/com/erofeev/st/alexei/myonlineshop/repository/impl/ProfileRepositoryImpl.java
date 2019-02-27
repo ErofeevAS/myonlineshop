@@ -28,7 +28,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public Integer save(Connection connection, Profile profile) throws RepositoryException {
-        String query = "INSERT INTO profiles   VALUES(?,?,?)";
+        String query = "INSERT INTO profiles (user_id,address,telephone)  VALUES(?,?,?)";
         Long id = profile.getUser().getId();
         String address = profile.getAddress();
         String telephone = profile.getTelephone();
@@ -47,7 +47,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public Integer update(Connection connection, Profile profile) throws RepositoryException {
-        String query = "UPDATE profiles SET address=?,telephone=? WHERE id=?";
+        String query = "UPDATE profiles SET address=?,telephone=? WHERE user_id=?";
         Long id = profile.getUser().getId();
         String address = profile.getAddress();
         String telephone = profile.getTelephone();

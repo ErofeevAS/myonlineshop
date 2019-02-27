@@ -40,4 +40,9 @@ public class SecureServiceImpl implements SecureService {
         }
         return generatedPassword;
     }
+
+    @Override
+    public Boolean comparePasswords(String hashOne, String hashTwo) {
+        return hashOne.equals(hashTwo);
+    }
 }

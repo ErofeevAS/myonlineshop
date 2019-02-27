@@ -6,7 +6,9 @@ public class UserDTO {
     private Long id;
     private String firstName;
     private String lastName;
+    private String password;
     private Role role;
+
 
     public Long getId() {
         return id;
@@ -40,12 +42,21 @@ public class UserDTO {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
     }

@@ -1,12 +1,12 @@
 package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +58,25 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User update(Connection connection, User user) {
-        return null;
+    public Integer update(Connection connection, User user) throws RepositoryException {
+        String query = "UPDATE users SET name=?,surname=?,password=? WHERE id=?";
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String password = user.getPassword();
+        Long id = user.getId();
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, firstName);
+            ps.setString(2, lastName);
+            ps.setString(3, password);
+            ps.setLong(4, id);
+            Integer amount = ps.executeUpdate();
+            return amount;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RepositoryException("Can't update user.",e);
+        }
     }
 
     @Override
@@ -84,7 +101,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("Can't find user by email: "  + e.getMessage());
+            System.out.println("Can't find user by email: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -148,7 +165,6 @@ public class UserRepositoryImpl implements UserRepository {
             System.out.println("User not found");
         return null;
     }
-
 
 
 }

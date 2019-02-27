@@ -5,6 +5,9 @@ public class ProfileDTO {
     private String address;
     private String telephone;
 
+    public ProfileDTO() {
+    }
+
     public ProfileDTO(Long id, String address, String telephone) {
         this.id = id;
         this.address = address;
