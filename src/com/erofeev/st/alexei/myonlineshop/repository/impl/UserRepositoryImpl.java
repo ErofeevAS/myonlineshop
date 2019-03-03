@@ -90,9 +90,9 @@ public class UserRepositoryImpl implements UserRepository {
                 "       roles.id as role_id,roles.name as role_name," +
                 "       permissions.id as permission_id,permissions.name" +
                 "       FROM users" +
-                "       JOIN roles ON users.role_id = roles.id and users.email=?" +
+                "       JOIN roles ON users.role_id = roles.id" +
                 "       JOIN  role_permission  ON roles.id = role_permission.role_id" +
-                "       JOIN  permissions ON role_permission.permission_id =  permissions.id";
+                "       JOIN  permissions ON role_permission.permission_id =  permissions.id where users.email=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);

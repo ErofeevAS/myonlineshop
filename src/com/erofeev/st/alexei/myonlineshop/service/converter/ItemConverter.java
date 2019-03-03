@@ -1,7 +1,9 @@
 package com.erofeev.st.alexei.myonlineshop.service.converter;
 
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
+import com.erofeev.st.alexei.myonlineshop.repository.model.Order;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
 import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 
 import java.math.BigDecimal;
@@ -25,7 +27,13 @@ public class ItemConverter {
         return item;
     }
 
-
+    public static List<ItemDTO> convertList(List<Item> items) {
+        List<ItemDTO> itemsDTOList = new ArrayList<>();
+        for (Item item : items) {
+            itemsDTOList.add(toDTO(item));
+        }
+        return itemsDTOList;
+    }
     public static List<Item> convertItemsXMLtoItems(List<ItemXML> itemsXML) {
         List<Item> items = new ArrayList<>();
         for (ItemXML itemXML : itemsXML) {

@@ -1,5 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.service;
 
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 
@@ -8,14 +9,16 @@ import java.util.List;
 
 public interface ItemService {
 
-    List<Item> findItems(int pageNumber, int amount);
+    List<ItemDTO> findItems(int pageNumber, int amount);
 
-    Item save(ItemDTO itemDTO);
+    void save(ItemDTO itemDTO) throws ServiceException;
 
-    Boolean delete(ItemDTO itemDTO);
+    void delete(ItemDTO itemDTO) throws ServiceException;
 
-    Item findById(Long id);
+    ItemDTO findById(Long id) throws ServiceException;
 
     Boolean importFromXml(File xml,File xsd);
+
+    Integer getAmountOfItems();
 
 }

@@ -6,16 +6,15 @@ import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ProfileRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Profile;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 import com.erofeev.st.alexei.myonlineshop.service.*;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.impl.*;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.*;
 
 import java.io.File;
+import java.util.List;
 
 public class Runner {
     public static void main(String[] args) throws ServiceException, RepositoryException {
@@ -36,36 +35,32 @@ public class Runner {
         File xsd = new File("items.xsd");
         itemService.importFromXml(xml, xsd);
 
-        UserLoginDTO userLoginDTO = new UserLoginDTO("spokeman152@gmail.com", "1234");
-        System.out.println(loginRegistrationService.loginUser(userLoginDTO));
+        SecureService secureService = SecureServiceImpl.getInstance();
+        System.out.println(secureService.hashPassword("1234"));
+        UserLoginDTO userLoginDTO = new UserLoginDTO("sp@gmail.com", "1234");
+        System.out.println("IS USER LOGIN? " + loginRegistrationService.loginUser(userLoginDTO));
 
 
-        UserDTO userDTO = userService.findById(1L, false);
-        System.out.println(userDTO);
-        Item item = itemService.findById(13L);
-        User user1 = UserConverter.fromDTO(userDTO);
-        orderService.create(user1, item, 2);
+        UserDTO userDTO = new UserDTO();
+        ItemDTO itemDTO = new ItemDTO();
+        userDTO.setId(1L);
+        itemDTO.setId(10L);
 
-        UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO("new@gmail.com", "1234", "1234", "john", "smith", "seller");
-        ProfileDTO profileDTO = new ProfileDTO();
-        profileDTO.setAddress("Minsk sq. Victory 54 app 2");
-        profileDTO.setTelephone("+375296661313");
+        orderService.create(userDTO, itemDTO, 5);
+        itemDTO.setId(1L);
+        orderService.create(userDTO, itemDTO, 1);
+        itemDTO.setId(2L);
+        orderService.create(userDTO, itemDTO, 50);
 
-        User regUser = loginRegistrationService.registrationUser(userRegistrationDTO, profileDTO);
-
-        System.out.println("old password:" + userDTO.getPassword());
-        userDTO.setPassword("1");
-        userDTO.setFirstName("ALEKSEY");
-        try {
-            userService.update(userDTO);
-        } catch (ServiceException e) {
-            e.printStackTrace();
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(1L);
+        orderService.changeStatus(orderDTO, StatusEnum.DELIVERED);
+        System.out.println(orderService.findById(1L));
+        List<OrderDTO > orderDTOList = orderService.showUserOrders(userDTO);
+        for (OrderDTO dto : orderDTOList) {
+            System.out.println(dto);
         }
-        System.out.println("new password:" + userDTO.getPassword());
-        profileDTO.setTelephone("+375291111111");
-        profileDTO.setId(regUser.getId());
-        profileService.update(profileDTO);
-
+        System.out.println(itemService.getAmountOfItems());
 
     }
 

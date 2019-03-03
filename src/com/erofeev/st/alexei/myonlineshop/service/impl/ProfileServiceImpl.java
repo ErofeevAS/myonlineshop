@@ -59,10 +59,11 @@ public class ProfileServiceImpl implements ProfileService {
             }
             return amountUpdatedProfiles;
         } catch (RepositoryException e) {
-            System.out.println(e.getMessage());
+            String message = "profile service update exception: " + e.getMessage();
             e.printStackTrace();
-            throw new ServiceException(e);
+            throw new ServiceException(message, e);
         } catch (SQLException e) {
+            String message = "profile service update exception: " + e.getMessage();
             e.printStackTrace();
             throw new ServiceException(e);
         }

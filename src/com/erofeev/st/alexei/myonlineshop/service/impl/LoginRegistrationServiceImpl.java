@@ -6,6 +6,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.ProfileRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.RoleRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ProfileRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.RoleRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
@@ -17,6 +18,7 @@ import com.erofeev.st.alexei.myonlineshop.service.SecureService;
 import com.erofeev.st.alexei.myonlineshop.service.converter.ProfileConverter;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
@@ -46,23 +48,27 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
     }
 
     @Override
-    public User loginUser(UserLoginDTO userLoginDTO) {
-        String passwordFromWeb;
-        User user;
+    public UserDTO loginUser(UserLoginDTO userLoginDTO) throws ServiceException {
+        User user = null;
+        UserDTO userDTO = null;
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 String email = userLoginDTO.getEmail();
-                passwordFromWeb = userLoginDTO.getPassword();
+                String passwordFromWeb = userLoginDTO.getPassword();
                 user = userRepository.findByEmail(connection, email, false);
-                if (user == null) {
-                    System.out.println("user not found");
-                    return null;
-                }
                 connection.commit();
+                if (user == null) {
+                    throw new ServiceException("User not found");
+                }
+                userDTO = UserConverter.toDTO(user);
+                userDTO.setPassword(null);
                 String passwordFromDataBase = user.getPassword();
+                passwordFromWeb = secureService.hashPassword(passwordFromWeb);
                 if (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase)) {
-                    return user;
+                    return userDTO;
+                } else {
+                    userDTO = null;
                 }
 
             } catch (SQLException e) {
@@ -73,28 +79,23 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return userDTO;
     }
 
     @Override
-    public User registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO) throws RepositoryException {
+    public void registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO) throws RepositoryException, ServiceException {
         User user = null;
         String email = userRegistrationDTO.getEmail();
         String password = userRegistrationDTO.getPassword();
-        String repeatedPassword = userRegistrationDTO.getRepeatedPassword();
-        if (!password.equals(repeatedPassword)) {
-            System.out.println("password and repeated password are different");
-            return user;
-        }
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                if (userRepository.findByEmail(connection, email, false) == null) {
-                    String hashedPassword = secureService.hashPassword(userRegistrationDTO.getPassword());
+                user = userRepository.findByEmail(connection, email, false);
+                if (user != null) {
+                    String hashedPassword = secureService.hashPassword(password);
                     userRegistrationDTO.setPassword(hashedPassword);
                     user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
-                    String roleName = userRegistrationDTO.getRole();
-                    Role role = roleRepository.findByName(connection, roleName);
+                    Role role = new Role("user");
                     user.setRole(role);
                     userRepository.save(connection, user);
                     Long userId = user.getId();
@@ -103,10 +104,10 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                     profileRepository.save(connection, profile);
 
                 } else {
-                    System.out.println("Email reserved");
+                    throw new ServiceException("Email reserved");
                 }
                 connection.commit();
-                return user;
+
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
@@ -116,7 +117,6 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        return user;
     }
 
 }

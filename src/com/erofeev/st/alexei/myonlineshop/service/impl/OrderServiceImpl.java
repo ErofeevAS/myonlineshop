@@ -3,18 +3,29 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.OrderRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.OrderRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Order;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Status;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 import com.erofeev.st.alexei.myonlineshop.service.OrderService;
+import com.erofeev.st.alexei.myonlineshop.service.converter.ItemConverter;
+import com.erofeev.st.alexei.myonlineshop.service.converter.OrderConverter;
+import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
+import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
+import com.mysql.cj.x.protobuf.MysqlxCrud;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class OrderServiceImpl implements OrderService {
@@ -34,31 +45,81 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order create(User user, Item item, int quantity) {
+    public OrderDTO create(UserDTO userDTO, ItemDTO itemDTO, int quantity) throws ServiceException {
+        Order createdOrder = null;
         Date createdDate = new Date(Calendar.getInstance().getTime().getTime());
         Timestamp param = new Timestamp(createdDate.getTime());
         Order order = new Order();
         order.setCreatedDate(param);
         order.setQuantity(quantity);
+        Item item = ItemConverter.fromItem(itemDTO);
+        User user = UserConverter.fromDTO(userDTO);
         order.setItem(item);
         order.setUser(user);
-        order.setStatus(Status.NEW);
+        order.setStatus(StatusEnum.NEW);
         try (Connection connection = connectionService.getConnection()) {
-            orderRepository.save(connection, order);
+            connection.setAutoCommit(false);
+            createdOrder = orderRepository.save(connection, order);
+            if (createdOrder == null) {
+                throw new ServiceException("order wasn't created");
+            }
+            connection.commit();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
         } catch (SQLException e) {
-            e.getMessage();
+            String message = "order service create exception: " + e.getMessage();
+            e.printStackTrace();
+            throw new ServiceException(message, e);
+
+        }
+        return OrderConverter.toDTO(createdOrder);
+    }
+
+    @Override
+    public List<OrderDTO> showUserOrders(UserDTO userDTO) {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            User user = UserConverter.fromDTO(userDTO);
+            List<Order> orders = orderRepository.findUserOrders(connection, user);
+            orderDTOList = OrderConverter.convertList(orders);
+            connection.commit();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return orderDTOList;
+    }
+
+
+    @Override
+    public void changeStatus(OrderDTO orderDTO, StatusEnum status) {
+        Order order = OrderConverter.fromDTO(orderDTO);
+        order.setStatus(status);
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            orderRepository.update(connection, order, status);
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public Order show(User user) {
-        return null;
-    }
-
-    @Override
-    public Boolean changeStatus(Order order, Status status) {
-        return null;
+    public OrderDTO findById(Long id) throws ServiceException {
+        OrderDTO orderDTO = null;
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            Order order = orderRepository.findById(connection, id);
+            if (order == null) {
+                throw new ServiceException("Order not found");
+            }
+            orderDTO = OrderConverter.toDTO(order);
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ServiceException("Problem with database connection");
+        }
+        return orderDTO;
     }
 }

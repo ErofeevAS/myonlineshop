@@ -3,6 +3,7 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ItemRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
@@ -16,6 +17,7 @@ import com.erofeev.st.alexei.myonlineshop.xml.impl.XMLServiceImpl;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemServiceImpl implements ItemService {
@@ -38,50 +40,59 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findItems(int pageNumber, int amount) {
+    public List<ItemDTO> findItems(int pageNumber, int amount) {
+        List<ItemDTO> itemDTOList = new ArrayList<>();
         List<Item> items = null;
         try (Connection connection = connectionService.getConnection()) {
             items = itemRepository.findAll(connection, pageNumber, amount);
+            itemDTOList = ItemConverter.convertList(items);
+
         } catch (SQLException e) {
             System.out.println("Can't open connection: " + e.getMessage());
             e.printStackTrace();
         }
-        return items;
+        return itemDTOList;
     }
 
     @Override
-    public Item save(ItemDTO itemDTO) {
+    public void save(ItemDTO itemDTO) throws ServiceException {
         Item returnedItem = null;
         try (Connection connection = connectionService.getConnection()) {
             Item item = ItemConverter.fromItem(itemDTO);
             item.setUniqueNumber(UniqueNumberGenerator.generateUniqueNumber());
             returnedItem = itemRepository.save(connection, item);
-        } catch (SQLException e) {
-            System.out.println("Can't open connection when try save item: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return returnedItem;
-    }
-
-    @Override
-    public Boolean delete(ItemDTO itemDTO) {
-        try (Connection connection = connectionService.getConnection()) {
-            Item item = ItemConverter.fromItem(itemDTO);
-            if (itemRepository.delete(connection, item)) {
-                return true;
+            if (returnedItem == null) {
+                throw new ServiceException("Item wasn't saved");
             }
         } catch (SQLException e) {
-            System.out.println("Can't open connection when try delete item: " + e.getMessage());
+            String message = "Can't open connection when try delete item: " + e.getMessage();
             e.printStackTrace();
+            throw new ServiceException(message, e);
         }
-        return false;
     }
 
     @Override
-    public Item findById(Long id) {
+    public void delete(ItemDTO itemDTO) throws ServiceException {
+        try (Connection connection = connectionService.getConnection()) {
+            Item item = ItemConverter.fromItem(itemDTO);
+            if (!itemRepository.delete(connection, item)) {
+                throw new ServiceException("Item wasn't deleted");
+            }
+        } catch (SQLException e) {
+            String message = "Can't open connection when try delete item: " + e.getMessage();
+            e.printStackTrace();
+            throw new ServiceException(message, e);
+        }
+    }
+
+    @Override
+    public ItemDTO findById(Long id) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
             Item foundItem = itemRepository.findById(connection, id);
-            return foundItem;
+            if (foundItem == null) {
+                throw new ServiceException("item not found");
+            }
+            return ItemConverter.toDTO(foundItem);
         } catch (SQLException e) {
             System.out.println("Can't open connection when trying find item by id: " + e.getMessage());
             e.printStackTrace();
@@ -117,5 +128,20 @@ public class ItemServiceImpl implements ItemService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public Integer getAmountOfItems() {
+        Integer amount = null;
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            amount = itemRepository.getAmount(connection);
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return amount;
+
     }
 }

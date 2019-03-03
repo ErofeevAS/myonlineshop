@@ -8,6 +8,7 @@ public class Profile {
     public Profile() {
     }
 
+
     public User getUser() {
         return user;
     }

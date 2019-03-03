@@ -9,6 +9,15 @@ public class ItemDTO {
     private String uniqueNumber;
     private BigDecimal price;
 
+    public ItemDTO() {
+    }
+
+    public ItemDTO(String name, String description, BigDecimal price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }

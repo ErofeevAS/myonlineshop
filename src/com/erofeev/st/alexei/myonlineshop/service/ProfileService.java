@@ -5,8 +5,11 @@ import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 
 public interface ProfileService {
 
+
     void save(ProfileDTO profileDTO);
 
     Integer update(ProfileDTO profileDTO) throws ServiceException;
+
+
 
 }

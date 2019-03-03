@@ -13,6 +13,7 @@ import static com.erofeev.st.alexei.myonlineshop.config.connection.Configuration
 public class ConnectionServiceImpl implements ConnectionService {
     private static volatile ConnectionService instance = null;
     private static ConfigurationManager configurationManager = ConfigurationManagerImpl.getInstance();
+
     private ConnectionServiceImpl() {
         System.out.println("loading jdbc driver...");
         try {
@@ -44,7 +45,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         String dataBaseUrl = configurationManager.getProperty(DATA_BASE_URL);
         properties.setProperty("user", configurationManager.getProperty(DATA_BASE_USERNAME));
         properties.setProperty("password", configurationManager.getProperty(DATA_BASE_PASSWORD));
-        properties.setProperty("serverTimezone",  configurationManager.getProperty(DATA_BASE_SERVERTIMEZONE));
+        properties.setProperty("serverTimezone", configurationManager.getProperty(DATA_BASE_SERVERTIMEZONE));
 
         Connection connection = null;
         try {

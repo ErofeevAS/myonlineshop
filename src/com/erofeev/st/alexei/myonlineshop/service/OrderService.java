@@ -1,15 +1,23 @@
 package com.erofeev.st.alexei.myonlineshop.service;
 
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Order;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Status;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
+import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
+
+import java.util.List;
 
 public interface OrderService {
 
-    Order create(User user, Item item, int quantity);
+    OrderDTO create(UserDTO userDTO, ItemDTO itemDTO, int quantity) throws ServiceException;
 
-    Order show(User user);
+    List<OrderDTO> showUserOrders(UserDTO userDTO);
 
-    Boolean changeStatus(Order order, Status status);
+    void changeStatus(OrderDTO orderDTO, StatusEnum status);
+
+    OrderDTO findById(Long id) throws ServiceException;
 }

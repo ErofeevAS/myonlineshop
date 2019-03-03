@@ -2,6 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
+import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -158,6 +159,21 @@ public class ItemRepositoryImpl implements ItemRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Integer getAmount(Connection connection) {
+        Integer amount = null;
+        String query = "SELECT COUNT(*) FROM items";
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                resultSet.next();
+                amount = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return amount;
     }
 
     private Item getItem(ResultSet resultSet) throws SQLException {

@@ -19,4 +19,5 @@ public interface ItemRepository {
 
     Item findById(Connection connection, Long id);
 
+    Integer getAmount(Connection connection);
 }

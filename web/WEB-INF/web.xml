@@ -3,13 +3,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
     <servlet>
-        <servlet-name>HELLO</servlet-name>
-        <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.MyServlet</servlet-class>
-        
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.DispatcherServlet</servlet-class>
     </servlet>
+
     <servlet-mapping>
-        <servlet-name>HELLO</servlet-name>
-        <url-pattern>/hello</url-pattern>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>/shop/*</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+        <url-pattern>/index.html</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>

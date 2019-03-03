@@ -37,17 +37,20 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     @Override
-    public UserDTO findById(Long id, boolean isLazy) {
+    public UserDTO findById(Long id, boolean isLazy) throws ServiceException {
         User user;
         try (Connection connection = connectionService.getConnection()) {
             user = userRepository.findById(connection, id, isLazy);
             UserDTO userDTO = UserConverter.toDTO(user);
+            if (user == null) {
+                throw new ServiceException("User not found");
+            }
             return userDTO;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
+            throw new ServiceException("Problem with database connection", e);
         }
-        return null;
+
     }
 
     @Override
@@ -75,7 +78,6 @@ public class UserServiceImpl implements UserService {
                 default:
                     connection.rollback();
                     String message = "operation failed, too many rows for update, transaction was canceled";
-                    System.out.println(message);
                     throw new ServiceException(message);
             }
             return amountUpdatedUsers;
