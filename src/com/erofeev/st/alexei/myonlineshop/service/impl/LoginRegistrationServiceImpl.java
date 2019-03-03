@@ -91,13 +91,14 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
             try {
                 connection.setAutoCommit(false);
                 user = userRepository.findByEmail(connection, email, false);
-                if (user != null) {
+                if (user == null) {
                     String hashedPassword = secureService.hashPassword(password);
                     userRegistrationDTO.setPassword(hashedPassword);
                     user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
                     Role role = new Role("user");
+                    role.setId(1L);
                     user.setRole(role);
-                    userRepository.save(connection, user);
+                    user = userRepository.save(connection, user);
                     Long userId = user.getId();
                     Profile profile = ProfileConverter.fromDTO(profileDTO);
                     profile.setUser(user);

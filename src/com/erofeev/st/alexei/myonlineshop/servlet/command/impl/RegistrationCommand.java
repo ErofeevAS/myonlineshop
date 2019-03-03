@@ -5,8 +5,11 @@ import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryExcepti
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
+import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
+import com.erofeev.st.alexei.myonlineshop.service.impl.ItemServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.service.impl.LoginRegistrationServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
@@ -17,6 +20,7 @@ import java.util.List;
 
 public class RegistrationCommand implements Command {
     private LoginRegistrationService loginRegistrationService = LoginRegistrationServiceImpl.getInstance();
+    private ItemService itemService = ItemServiceImpl.getInstance();
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -25,10 +29,9 @@ public class RegistrationCommand implements Command {
         String password = request.getParameter("password");
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
-//        email = "spp@gmail.com";
-//        password = "1234";
-//        firstName = "Bob";
-//        lastName = "Pupkin";
+        if (email == null) {
+            return page;
+        }
         UserRegistrationDTO userDTO = new UserRegistrationDTO(email, password, firstName, lastName);
         String address = request.getParameter("address");
         String telephone = request.getParameter("telephone");
@@ -37,21 +40,23 @@ public class RegistrationCommand implements Command {
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setAddress(address);
         profileDTO.setTelephone(telephone);
-        if ((email == null) || (password == null) || (firstName == null) || (lastName == null) || (address == null) || (telephone == null)) {
 
-        } else {
+        try {
+            User regUser = null;
             try {
-                User regUser = null;
-                try {
-                    loginRegistrationService.registrationUser(userDTO, profileDTO);
-                } catch (ServiceException e) {
-                    e.printStackTrace();
-                }
+                loginRegistrationService.registrationUser(userDTO, profileDTO);
                 request.setAttribute("user", regUser);
+                List<ItemDTO> items = itemService.findItems(1, 25);
+                request.setAttribute("items", items);
                 page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE_PATH);
-            } catch (RepositoryException e) {
+            } catch (ServiceException e) {
+                System.out.println(e.getMessage());
                 e.printStackTrace();
+                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE_PATH);
             }
+
+        } catch (RepositoryException e) {
+            e.printStackTrace();
         }
         return page;
     }

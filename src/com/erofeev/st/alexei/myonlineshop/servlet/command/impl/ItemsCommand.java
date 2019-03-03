@@ -20,7 +20,7 @@ public class ItemsCommand implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
         Integer maxPages = itemService.getAmountOfItems();
-        List<ItemDTO> items = itemService.findItems(1,10);
+        List<ItemDTO> items = itemService.findItems(1,5);
         request.setAttribute("items",items);
         request.setAttribute("maxpages",maxPages);
         return ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE_PATH);

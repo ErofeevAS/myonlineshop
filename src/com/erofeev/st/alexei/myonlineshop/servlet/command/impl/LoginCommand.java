@@ -29,7 +29,7 @@ public class LoginCommand implements Command {
         //UserDTO userDTO = loginRegistrationService.loginUser(new UserLoginDTO(email, password));
         if ((email != null) && (password != null)) {
             if (check(password, pas, email, emailUser)) {
-                List<ItemDTO> items = itemService.findItems(1, 10);
+                List<ItemDTO> items = itemService.findItems(1, 25);
                 request.setAttribute("items", items);
                 page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE_PATH);
             } else {

@@ -26,7 +26,9 @@ public class ItemCommand implements Command {
         ItemDTO itemDTO = new ItemDTO(name, description, price);
         try {
             itemService.save(itemDTO);
+            System.out.println("Item was save");
         } catch (ServiceException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return page;

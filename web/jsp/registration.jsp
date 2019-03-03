@@ -23,6 +23,7 @@
 					<div class="card-body">
 						<h5 class="card-title text-center">Registration</h5>
 						<form action= ${pageContext.request.contextPath}/shop?command=registration method="get" class="form-signin" >
+							<input type="hidden" name="command" value="registration"/>
 							<div class="form-label-group">
 								<input type="Email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required autofocus>
 								<label for="inputEmail">Email address</label>

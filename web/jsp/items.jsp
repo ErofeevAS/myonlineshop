@@ -34,7 +34,7 @@
                 </div>
             </form>
             <form action=${pageContext.request.contextPath}/shop?command=additem method="get">
-                <input type="hidden" name="command" value="additem" />
+                <input type="hidden" name="command" value="additem"/>
                 <div class="form-label-group">
                     <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">add item</button>
                 </div>
@@ -59,20 +59,21 @@
                 <tbody>
                 <c:forEach items="${requestScope.items}" var="item">
                     <tr>
-                        <form action=${pageContext.request.contextPath}/shop?command=order&user=${sessionScope.user}&item=${item} method="get">
+                        <form action="${pageContext.request.contextPath}/shop?command=order&user=${sessionScope.user}&item=${item}"
+                              method="get">
                             <th scope="row">#</th>
                             <td>${item.name}</td>
                             <td>${item.description}</td>
                             <td>@${item.price}</td>
                             <td>@${item.uniqueNumber}</td>
-                            <td><button type="submit">buy</button></td>
+                            <button type="submit">buy</button>
                         </form>
                     </tr>
                 </c:forEach>
 
                 </tbody>
                 <thead>
-                <div class ="page-selector">
+                <div class="page-selector">
                     <div class="page-per-page">
                         <span>Result per page</span>
                         <form class="page-dropdown">
