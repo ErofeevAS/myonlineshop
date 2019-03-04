@@ -44,7 +44,7 @@
                 <tbody>
                 <c:forEach items="${requestScope.orders}" var="order">
                     <tr>
-                        <form action="${pageContext.request.contextPath}/shop?command=myorders&user=${sessionScope.user}"
+                        <form action="${pageContext.request.contextPath}/shop?command=orders&id=${order.id}"
                               method="post">
                             <th scope="row">#</th>
                             <td>${order.firstName}</td>
@@ -54,15 +54,21 @@
                             <td>${order.createdDate}</td>
                             <td>${order.quantity}</td>
                             <td>${order.price*order.quantity}</td>
+
                             <td>
-                                <select class="selectpicker">
-                                <option>NEW</option>
-                                <option>REVIEWING</option>
-                                <option>IN_PROCESS</option>
-                                <option>DELIVERED</option>
-                            </select>
+                                <select id="status" name="status">
+                                    <option selected="selected">
+                                        ${order.status}
+                                    </option>
+                                    <option>NEW</option>
+                                    <option>REVIEWING</option>
+                                    <option>IN_PROCESS</option>
+                                    <option>DELIVERED</option>
+                                </select>
                             </td>
-                            <td> <button class="btn-sm" type="submit">change</button></td>
+                            <td>
+                                <button class="btn-sm" type="submit">change</button>
+                            </td>
                         </form>
                     </tr>
                 </c:forEach>
