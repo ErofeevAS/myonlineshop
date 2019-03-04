@@ -19,9 +19,10 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final String LOGIN_PAGE_PATH = "pages.login";
     public static final String INDEX_PAGE_PATH = "pages.index";
     public static final String ERROR_PAGE_PATH = "pages.error";
-    public static final String MAIN_PAGE_PATH = "pages.main";
     public static final String REGISTRATION_PAGE_PATH = "pages.registration";
     public static final String ORDERS_PAGE_PATH = "pages.orders";
+    public static final String ORDER_PAGE_PATH = "pages.order";
+    public static final String MYORDERS_PAGE_PATH = "pages.myorders";
     public static final String ADDITEM_PAGE_PATH = "pages.additem";
 
     private ConfigurationManagerImpl() {

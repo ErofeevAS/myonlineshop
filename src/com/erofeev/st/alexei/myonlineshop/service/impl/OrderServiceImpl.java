@@ -91,6 +91,20 @@ public class OrderServiceImpl implements OrderService {
         return orderDTOList;
     }
 
+    @Override
+    public List<OrderDTO> showAllOrders(int pageNumber, int amount) {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            List<Order> orders = orderRepository.findAll(connection, pageNumber, amount);
+            orderDTOList = OrderConverter.convertList(orders);
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orderDTOList;
+    }
+
 
     @Override
     public void changeStatus(OrderDTO orderDTO, StatusEnum status) {

@@ -60,7 +60,7 @@
 							<hr class="my-4">
 
 							<div id="register-link" class="text-right">
-								<a href="login.html" class="text-info">back</a>
+								<a href=" ${pageContext.request.contextPath}/shop?command=login"class="text-info">back</a>
 							</div>
 						</form>
 					</div>

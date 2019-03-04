@@ -118,6 +118,27 @@ public class OrderRepositoryImpl implements OrderRepository {
         return orders;
     }
 
+    @Override
+    public List<Order> findAll(Connection connection, int pageNumber, int amount) {
+        List<Order> orders = new ArrayList<>();
+        int offset = (pageNumber - 1) * amount;
+        String query = "SELECT orders.id as id,status,created, users.id as user_id,email,users.name as firstname,users.surname as lastname," +
+                "        items.id as items_id, items.name as item_name,description,quantity, items.price as price,UNIQUE_number" +
+                "       FROM orders" +
+                "       JOIN items ON orders.item_id = items.id" +
+                "       JOIN  users  ON users.id = orders.user_id LIMIT ?,? ";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, offset);
+            ps.setLong(2, amount);
+            ResultSet resultSet = ps.executeQuery();
+            orders = getOrder(resultSet);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
     private List<Order> getOrder(ResultSet resultSet) throws SQLException {
         List<Order> orders = new ArrayList<>();
         while (resultSet.next()) {

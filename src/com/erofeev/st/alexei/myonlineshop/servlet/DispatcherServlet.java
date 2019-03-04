@@ -34,6 +34,10 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.LOGIN, new LoginCommand());
         commands.put(CommandEnum.REGISTRATION, new RegistrationCommand());
         commands.put(CommandEnum.ADDITEM, new ItemCommand());
+        commands.put(CommandEnum.ORDER, new OrderCommand());
+        commands.put(CommandEnum.MYORDERS, new MyOrdersCommand());
+        commands.put(CommandEnum.ORDERS, new OrdersCommand());
+
 
     }
 

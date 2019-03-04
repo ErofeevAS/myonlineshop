@@ -20,9 +20,9 @@
             <div class="card card-signin my-5">
                 <div class="card-body">
                     <h5 class="card-title text-center">Sign In</h5>
-                    <form action="${pageContext.request.contextPath}/shop?command=login" method="get"
+                    <form action="${pageContext.request.contextPath}/shop?command=login" method="post"
                           class="form-signin">
-                        <input type="hidden" name="command" value="login"/>
+                        <%--<input type="hidden" name="command" value="login"/>--%>
                         <div class="form-label-group">
                             <input type="email" name="email" value="${email}" id="inputEmail" class="form-control"
                                    placeholder="Email address" required autofocus>
@@ -38,18 +38,10 @@
                         <hr class="my-4">
 
                     </form>
-                    <form action="${pageContext.request.contextPath}/shop?command=registration" method="get">
-                        <input type="hidden" name="command" value="registration"/>
-                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">reg</button>
-                    </form>
-                    <%--<a href=${pageContext.request.contextPath}/shop?command=registration" method="get"--%>
-                    <%--class="btn-primary" aria-pressed="true" role="button"> register--%>
-                    <%----%>
-                    <%--</a>--%>
-                    <%--<div id="register-link" class="text-right">--%>
-                    <%--<a href=" ${pageContext.request.contextPath}/shop?command=registration"  method="get" class="text-info">Register--%>
-                    <%--here</a>--%>
-                    <%--</div>--%>
+
+                    <div id="register-link" class="text-right">
+                        <a href=" ${pageContext.request.contextPath}/shop?command=registration"class="text-info">registration</a>
+                    </div>
                 </div>
             </div>
         </div>

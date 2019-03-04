@@ -3,6 +3,7 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.ItemRepositoryImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
@@ -86,9 +87,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDTO findById(Long id) throws ServiceException {
+    public ItemDTO findById(Long id) throws ServiceException, RepositoryException {
         try (Connection connection = connectionService.getConnection()) {
             Item foundItem = itemRepository.findById(connection, id);
+            if (foundItem == null) {
+                throw new ServiceException("item not found");
+            }
+            return ItemConverter.toDTO(foundItem);
+        } catch (SQLException e) {
+            System.out.println("Can't open connection when trying find item by id: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ItemDTO findByUniqueNumber(String uniqueNumber) throws RepositoryException, ServiceException {
+        try (Connection connection = connectionService.getConnection()) {
+            Item foundItem = itemRepository.findByUniqueNumber(connection, uniqueNumber);
             if (foundItem == null) {
                 throw new ServiceException("item not found");
             }

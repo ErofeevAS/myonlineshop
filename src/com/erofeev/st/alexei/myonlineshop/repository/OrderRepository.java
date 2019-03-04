@@ -17,4 +17,6 @@ public interface OrderRepository {
     Boolean update(Connection connection, Order order, StatusEnum status);
 
     List<Order> findUserOrders(Connection connection, User user);
+
+    List<Order> findAll(Connection connection, int pageNumber, int amount);
 }

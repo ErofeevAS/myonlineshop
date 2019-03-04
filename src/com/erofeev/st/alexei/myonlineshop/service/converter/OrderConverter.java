@@ -10,6 +10,7 @@ import com.erofeev.st.alexei.myonlineshop.service.ProfileService;
 import com.erofeev.st.alexei.myonlineshop.service.impl.ProfileServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class OrderConverter {
         order.setId(orderDTO.getId());
         order.setUser(user);
         Item item = new Item();
+        orderDTO.setPrice(item.getPrice());
         item.setId(orderDTO.getItemId());
         order.setItem(item);
         Timestamp timestamp = orderDTO.getCreatedDate();
@@ -41,10 +43,11 @@ public class OrderConverter {
         String lastName = order.getUser().getLastName();
         Long itemId = order.getItem().getId();
         String itemName = order.getItem().getName();
+        BigDecimal price = order.getItem().getPrice();
         Timestamp createdDate = order.getCreatedDate();
         Integer quantity = order.getQuantity();
         StatusEnum status = order.getStatus();
-        OrderDTO orderDTO = new OrderDTO(orderId, userId, firstName, lastName, itemId, itemName, createdDate, quantity, status);
+        OrderDTO orderDTO = new OrderDTO(orderId, userId, firstName, lastName, itemId, itemName, price, createdDate, quantity, status);
         return orderDTO;
     }
 

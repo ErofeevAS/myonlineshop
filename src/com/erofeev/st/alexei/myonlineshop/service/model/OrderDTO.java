@@ -2,6 +2,7 @@ package com.erofeev.st.alexei.myonlineshop.service.model;
 
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class OrderDTO {
@@ -11,6 +12,7 @@ public class OrderDTO {
     private String lastName;
     private Long itemId;
     private String itemName;
+    private BigDecimal price;
     private Timestamp createdDate;
     private Integer quantity;
     private StatusEnum status;
@@ -18,16 +20,25 @@ public class OrderDTO {
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, Long userId, String firstName, String lastName, Long itemId, String itemName, Timestamp createdDate, Integer quantity, StatusEnum status) {
+    public OrderDTO(Long id, Long userId, String firstName, String lastName, Long itemId, String itemName, BigDecimal price, Timestamp createdDate, Integer quantity, StatusEnum status) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.itemId = itemId;
         this.itemName = itemName;
+        this.price = price;
         this.createdDate = createdDate;
         this.quantity = quantity;
         this.status = status;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Long getId() {
@@ -111,6 +122,7 @@ public class OrderDTO {
                 ", lastName='" + lastName + '\'' +
                 ", itemId=" + itemId +
                 ", itemName='" + itemName + '\'' +
+                ", price=" + price +
                 ", createdDate=" + createdDate +
                 ", quantity=" + quantity +
                 ", status=" + status +

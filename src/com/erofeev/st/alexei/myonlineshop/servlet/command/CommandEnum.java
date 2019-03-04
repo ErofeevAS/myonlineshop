@@ -10,7 +10,10 @@ public enum CommandEnum {
     REGISTRATION,
     ITEMS,
     ORDERS,
-    ADDITEM;
+    ADDITEM,
+    ORDER,
+    MYORDERS;
+
 
     public static CommandEnum getCommand(HttpServletRequest request) {
         String action = request.getParameter("command");

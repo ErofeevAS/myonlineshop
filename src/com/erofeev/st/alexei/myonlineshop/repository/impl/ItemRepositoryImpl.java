@@ -1,6 +1,7 @@
 package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 
@@ -143,7 +144,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item findById(Connection connection, Long id) {
+    public Item findById(Connection connection, Long id) throws RepositoryException {
         String query = "SELECT * FROM items WHERE id=?";
         Item item = null;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -155,10 +156,30 @@ public class ItemRepositoryImpl implements ItemRepository {
             }
             return item;
         } catch (SQLException e) {
-            System.out.println("Can't find item by id: " + e.getMessage());
+            String message = "Can't find item by uniqueNumber: " + e.getMessage();
             e.printStackTrace();
+            throw new RepositoryException(message, e);
         }
-        return null;
+    }
+
+    @Override
+    public Item findByUniqueNumber(Connection connection, String uniqueNumber) throws RepositoryException {
+        String query = "SELECT * FROM items WHERE UNIQUE_number=?";
+        Item item = null;
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, uniqueNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    item = getItem(rs);
+                }
+            }
+            return item;
+        } catch (SQLException e) {
+            String message = "Can't find item by uniqueNumber: " + e.getMessage();
+            e.printStackTrace();
+            throw new RepositoryException(message, e);
+        }
+
     }
 
     @Override

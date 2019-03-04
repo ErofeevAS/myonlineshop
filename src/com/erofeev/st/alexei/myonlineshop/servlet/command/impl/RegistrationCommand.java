@@ -35,8 +35,7 @@ public class RegistrationCommand implements Command {
         UserRegistrationDTO userDTO = new UserRegistrationDTO(email, password, firstName, lastName);
         String address = request.getParameter("address");
         String telephone = request.getParameter("telephone");
-//        address = "my address";
-//        telephone = "+375291313666";
+
         ProfileDTO profileDTO = new ProfileDTO();
         profileDTO.setAddress(address);
         profileDTO.setTelephone(telephone);

@@ -13,63 +13,42 @@
     <title>Login</title>
 
 </head>
-
-
 </head>
 <header>
     <h1>SHOP</h1>
 </header>
 
-
 <body>
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <div class="form-label-group">
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Profile</button>
-            </div>
-            <form action=${pageContext.request.contextPath}/shop?command=items method="get">
-                <div class="form-label-group">
-                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Items</button>
-                </div>
-            </form>
-            <form action=${pageContext.request.contextPath}/shop?command=additem method="get">
-                <input type="hidden" name="command" value="additem"/>
-                <div class="form-label-group">
-                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">add item</button>
-                </div>
-            </form>
-            <div class="form-label-group">
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Logout</button>
-            </div>
-
+            <jsp:include page="panel.jsp"></jsp:include>
         </div>
         <div class="col-sm-10">
-
             <table class="table table-dark">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">name</th>
-                    <th scope="col">description</th>
+                    <th scope="col">firstName</th>
+                    <th scope="col">lastName</th>
+                    <th scope="col">itemName</th>
                     <th scope="col">price</th>
-                    <th scope="col">unique_number</th>
+                    <th scope="col">timestamp</th>
+                    <th scope="col">quantity</th>
+                    <th scope="col">totalprice</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${requestScope.items}" var="item">
-                    <tr>
-                        <form action="${pageContext.request.contextPath}/shop?command=order&user=${sessionScope.user}&item=${item}"
-                              method="get">
-                            <th scope="row">#</th>
-                            <td>${item.name}</td>
-                            <td>${item.description}</td>
-                            <td>@${item.price}</td>
-                            <td>@${item.uniqueNumber}</td>
-                            <button type="submit">buy</button>
-                        </form>
-                    </tr>
-                </c:forEach>
+                <tr>
+                    <th scope="row">${firstname}</th>
+                    <td>${lastname}</td>
+                    <td>${itemname}</td>
+                    <td>${price}</td>
+                    <td>${timestamp}</td>
+                    <td>${quantity}</td>
+                    <td>${price*quantity}</td>
+
+                </tr>
+
 
                 </tbody>
                 <thead>
