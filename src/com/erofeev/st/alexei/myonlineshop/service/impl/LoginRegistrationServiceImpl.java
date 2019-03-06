@@ -56,13 +56,16 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                 connection.setAutoCommit(false);
                 String email = userLoginDTO.getEmail();
                 String passwordFromWeb = userLoginDTO.getPassword();
-                user = userRepository.findByEmail(connection, email, false);
-                connection.commit();
-                if (user == null) {
-                    throw new ServiceException("User not found");
+                try {
+                    user = userRepository.findByEmail(connection, email, false);
+                } catch (RepositoryException e) {
+                    throw new ServiceException(e);
                 }
+                connection.commit();
+//                if (user == null) {
+//                    return userDTO;
+//                }
                 userDTO = UserConverter.toDTO(user);
-                userDTO.setPassword(null);
                 String passwordFromDataBase = user.getPassword();
                 passwordFromWeb = secureService.hashPassword(passwordFromWeb);
                 if (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase)) {
@@ -73,11 +76,11 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
 
             } catch (SQLException e) {
                 connection.rollback();
-                System.out.println(e.getMessage());
+                String message = "transaction was rollback";
+                throw new ServiceException(message, e);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            throw new ServiceException(e);
         }
         return userDTO;
     }

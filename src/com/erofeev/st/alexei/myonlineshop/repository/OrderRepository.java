@@ -14,9 +14,11 @@ public interface OrderRepository {
 
     Order findById(Connection connection, Long id);
 
-    Boolean update(Connection connection, Order order, StatusEnum status);
+    Boolean update(Connection connection, Order order, StatusEnum status) throws RepositoryException;
 
     List<Order> findUserOrders(Connection connection, User user);
 
     List<Order> findAll(Connection connection, int pageNumber, int amount);
+
+    Integer getAmount(Connection connection) throws RepositoryException;
 }

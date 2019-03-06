@@ -22,7 +22,12 @@
 				<div class="card card-signin my-5">
 					<div class="card-body">
 						<h5 class="card-title text-center">Registration</h5>
-						<form action= ${pageContext.request.contextPath}/shop?command=registration method="get" class="form-signin" >
+						<c:if test="${not empty error}">
+							<div class="alert alert-warning" role="alert">
+								<c:out value="${error}"></c:out>
+							</div>
+						</c:if>
+						<form action= ${pageContext.request.contextPath}/shop?command=registration method="post" class="form-signin" >
 							<input type="hidden" name="command" value="registration"/>
 							<div class="form-label-group">
 								<input type="Email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required autofocus>
@@ -54,7 +59,6 @@
 								<input type="text" id="telephone" class="form-control" name="telephone"placeholder="Telephone" required autofocus>
 								<label for="telephone">Telephone</label>
 							</div>
-
 
 							<button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">register</button>
 							<hr class="my-4">

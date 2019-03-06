@@ -83,7 +83,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Boolean update(Connection connection, Order order, StatusEnum status) {
+    public Boolean update(Connection connection, Order order, StatusEnum status) throws RepositoryException {
         Long id = order.getId();
         String query = "UPDATE orders  SET status = ? WHERE id=? ";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -92,10 +92,11 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't update order: " + order + " " + e.getMessage());
+            String message = "Can't update order: " + order + " " + e.getMessage();
             e.printStackTrace();
+            throw new RepositoryException(message, e);
         }
-        return false;
+
     }
 
     @Override
@@ -138,6 +139,23 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
         return orders;
     }
+
+    @Override
+    public Integer getAmount(Connection connection) throws RepositoryException {
+        Integer amount = null;
+        String query = "SELECT COUNT(*) FROM orders";
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                resultSet.next();
+                amount = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            String message = "Can't get amount of orders: " + e.getMessage();
+            throw new RepositoryException(message, e);
+        }
+        return amount;
+    }
+
 
     private List<Order> getOrder(ResultSet resultSet) throws SQLException {
         List<Order> orders = new ArrayList<>();

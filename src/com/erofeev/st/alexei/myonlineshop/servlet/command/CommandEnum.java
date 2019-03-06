@@ -10,9 +10,12 @@ public enum CommandEnum {
     REGISTRATION,
     ITEMS,
     ORDERS,
-    ADDITEM,
+    ITEMADD,
     ORDER,
-    MYORDERS;
+    MYORDERS,
+    ITEMSDELETE,
+    CHANGEPASSWORD;
+
 
 
     public static CommandEnum getCommand(HttpServletRequest request) {

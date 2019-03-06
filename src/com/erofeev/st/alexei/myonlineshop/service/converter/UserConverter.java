@@ -5,6 +5,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserSessionDTO;
 
 public class UserConverter {
 
@@ -46,6 +47,16 @@ public class UserConverter {
         userDTO.setRole(role);
         userDTO.setId(id);
         return userDTO;
+    }
+
+    public static UserSessionDTO toSessionDTO(UserDTO userDTO){
+        UserSessionDTO userSessionDTO = new UserSessionDTO();
+        userSessionDTO.setEmail(userDTO.getEmail());
+        userSessionDTO.setFirstName(userDTO.getFirstName());
+        userSessionDTO.setLastName(userDTO.getLastName());
+        userSessionDTO.setId(userDTO.getId());
+        userSessionDTO.setPermission(userDTO.getRole().getPermissions().get(0));
+        return userSessionDTO;
     }
 
 }

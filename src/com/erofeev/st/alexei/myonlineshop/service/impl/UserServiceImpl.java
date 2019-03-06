@@ -49,6 +49,8 @@ public class UserServiceImpl implements UserService {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServiceException("Problem with database connection", e);
+        } catch (RepositoryException e) {
+            throw new ServiceException(e);
         }
 
     }
@@ -84,6 +86,27 @@ public class UserServiceImpl implements UserService {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServiceException("Can't set connection.", e);
+        }
+    }
+
+    @Override
+    public void updatePassword(Long id, String oldPassword, String newPassword) throws ServiceException {
+        User user = null;
+        try (Connection connection = connectionService.getConnection()) {
+            user = userRepository.findById(connection, id, true);
+            String passwordFromDataBase = user.getPassword();
+            String hashOldPassword = secureService.hashPassword(oldPassword);
+            if (secureService.comparePasswords(passwordFromDataBase, hashOldPassword)) {
+                String hashNewPassword = secureService.hashPassword(newPassword);
+                userRepository.updatePassword(connection, id, hashNewPassword);
+            } else {
+                String message = "Wrong password";
+                throw new ServiceException(message);
+            }
+        } catch (SQLException e) {
+            throw new ServiceException(e);
+        } catch (RepositoryException e) {
+            throw new ServiceException(e);
         }
     }
 

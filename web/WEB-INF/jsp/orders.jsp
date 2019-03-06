@@ -25,7 +25,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <jsp:include page="panel.jsp"></jsp:include>
+            <jsp:include page="util/panel.jsp"></jsp:include>
         </div>
         <div class="col-sm-10">
             <table class="table table-dark">
@@ -44,8 +44,9 @@
                 <tbody>
                 <c:forEach items="${requestScope.orders}" var="order">
                     <tr>
-                        <form action="${pageContext.request.contextPath}/shop?command=orders&id=${order.id}"
+                        <form action="${pageContext.request.contextPath}/shop?command=orders"
                               method="post">
+                            <input type="hidden" name="id" value="${order.id}">
                             <th scope="row">#</th>
                             <td>${order.firstName}</td>
                             <td>${order.lastName}</td>
@@ -58,7 +59,7 @@
                             <td>
                                 <select id="status" name="status">
                                     <option selected="selected">
-                                        ${order.status}
+                                            ${order.status}
                                     </option>
                                     <option>NEW</option>
                                     <option>REVIEWING</option>
@@ -75,7 +76,15 @@
 
                 </tbody>
                 <tfoot>
-                <jsp:include page="paginator.jsp"></jsp:include>
+                <jsp:include page="util/paginator.jsp">
+                    <jsp:param name="command" value="orders"/>
+                </jsp:include>
+
+                <c:if test="${not empty info}">
+                    <div class="alert alert-warning" role="alert">
+                        <c:out value="${info}"></c:out>
+                    </div>
+                </c:if>
                 </tfoot>
             </table>
         </div>

@@ -28,11 +28,10 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> findAll(Connection connection, int pageNumber, int amount) {
+    public List<Item> findAll(Connection connection, int pageNumber, int amount) throws RepositoryException {
         List<Item> items = new ArrayList<>();
         int offset = (pageNumber - 1) * amount;
         String query = "SELECT * FROM ITEMS WHERE deleted = false LIMIT ?,? ";
-
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setInt(1, offset);
             ps.setInt(2, amount);
@@ -43,13 +42,13 @@ public class ItemRepositoryImpl implements ItemRepository {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RepositoryException(e);
         }
         return items;
     }
 
     @Override
-    public Item save(Connection connection, Item item) {
+    public Item save(Connection connection, Item item) throws RepositoryException {
         String query = "INSERT INTO items (name,description,unique_number,price) VALUES(?,?,?,?)";
         String name = item.getName();
         String description = item.getDescription();
@@ -69,14 +68,14 @@ public class ItemRepositoryImpl implements ItemRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't add item: " + item + " " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't add item: " + item + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
         return item;
     }
 
     @Override
-    public Boolean saveList(Connection connection, List<Item> items) {
+    public Boolean saveList(Connection connection, List<Item> items) throws RepositoryException {
         String query = " INSERT INTO items VALUES(?,?,?,?,?,?)";
         try {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -97,16 +96,14 @@ public class ItemRepositoryImpl implements ItemRepository {
                 preparedStatement.executeBatch();
                 return true;
             }
-
         } catch (SQLException e) {
-            System.out.println("Can't save list of items: " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't save list of items: " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
-        return false;
     }
 
     @Override
-    public Boolean update(Connection connection, Item item) {
+    public Boolean update(Connection connection, Item item) throws RepositoryException {
         String query = "UPDATE  items SET name=?,description=?,unique_number=?,price=? WHERE id=?";
         Long id = item.getId();
         String name = item.getName();
@@ -122,14 +119,13 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't update item: " + item + " " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't update item: " + item + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
-        return false;
     }
 
     @Override
-    public Boolean delete(Connection connection, Item item) {
+    public Boolean delete(Connection connection, Item item) throws RepositoryException {
         String query = "UPDATE items  SET deleted = TRUE WHERE id=?";
         Long id = item.getId();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -137,10 +133,22 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't delete item: " + item + " " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't delete item: " + item + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
-        return false;
+    }
+
+    @Override
+    public Boolean delete(Connection connection, String uniqueNumber) throws RepositoryException {
+        String query = "UPDATE items  SET deleted = TRUE WHERE UNIQUE_number=?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, uniqueNumber);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            String message = "Can't delete item: "  + e.getMessage();
+            throw new RepositoryException(message, e);
+        }
     }
 
     @Override
@@ -157,7 +165,6 @@ public class ItemRepositoryImpl implements ItemRepository {
             return item;
         } catch (SQLException e) {
             String message = "Can't find item by uniqueNumber: " + e.getMessage();
-            e.printStackTrace();
             throw new RepositoryException(message, e);
         }
     }
@@ -176,14 +183,12 @@ public class ItemRepositoryImpl implements ItemRepository {
             return item;
         } catch (SQLException e) {
             String message = "Can't find item by uniqueNumber: " + e.getMessage();
-            e.printStackTrace();
             throw new RepositoryException(message, e);
         }
-
     }
 
     @Override
-    public Integer getAmount(Connection connection) {
+    public Integer getAmount(Connection connection) throws RepositoryException {
         Integer amount = null;
         String query = "SELECT COUNT(*) FROM items";
         try (Statement statement = connection.createStatement()) {
@@ -192,7 +197,8 @@ public class ItemRepositoryImpl implements ItemRepository {
                 amount = resultSet.getInt(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            String message = "Can't get amount of items: " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
         return amount;
     }

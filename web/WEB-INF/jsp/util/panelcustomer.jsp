@@ -18,8 +18,7 @@
         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Items</button>
     </div>
 </form>
-<form action=${pageContext.request.contextPath}/shop?command=additem method="post">
-    <input type="hidden" name="command" value="additem"/>
+<form action=${pageContext.request.contextPath}/shop?command=itemadd method="post">
     <div class="form-label-group">
         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">add item</button>
     </div>
@@ -43,6 +42,12 @@
     <input type="hidden" name="command" value="orders"/>
     <div class="form-label-group">
         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Orders</button>
+    </div>
+</form>
+
+<form action=${pageContext.request.contextPath}/shop?command=itemdelete method="post">
+    <div class="form-label-group">
+        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Delete Item</button>
     </div>
 </form>
 

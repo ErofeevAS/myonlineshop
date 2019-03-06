@@ -25,7 +25,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <jsp:include page="panel.jsp"></jsp:include>
+            <jsp:include page="util/panel.jsp"></jsp:include>
         </div>
         <div class="col-sm-10">
             <table class="table table-dark">
@@ -39,16 +39,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${requestScope.items}" var="item">
+                <c:set var="count" value="0" scope="page"/>
+
+                <c:forEach items="${items}" var="item">
+                    <c:set var="count" value="${count+1}" scope="page"/>
                     <tr>
-                        <form action="${pageContext.request.contextPath}/shop?command=order&user=${sessionScope.user}"
+                        <form action="${pageContext.request.contextPath}/shop?command=order"
                               method="post">
-                            <th scope="row">#</th>
+                            <th scope="row">${count+(page-1)*amount}</th>
                             <td>${item.name}</td>
                             <td>${item.description}</td>
                             <td>${item.price}</td>
                             <input type="hidden" name="uniquenumber" value="${item.uniqueNumber}">
-                            <td><input type="number" name="quantity"><br>
+                            <td><input type="number" min="0" name="quantity"><br>
                             </td>
                             <td style="display: none">${item.uniqueNumber}</td>
                             <td>
@@ -60,7 +63,15 @@
 
                 </tbody>
                 <thead>
-                <jsp:include page="paginator.jsp"></jsp:include>
+
+                <jsp:include page="util/paginator.jsp">
+                    <jsp:param name="command" value="items"/>
+                </jsp:include>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-warning" role="alert">
+                        <c:out value="${error}"></c:out>
+                    </div>
+                </c:if>
                 </thead>
             </table>
         </div>

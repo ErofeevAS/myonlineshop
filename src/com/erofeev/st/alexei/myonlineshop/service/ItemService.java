@@ -10,18 +10,20 @@ import java.util.List;
 
 public interface ItemService {
 
-    List<ItemDTO> findItems(int pageNumber, int amount);
+    List<ItemDTO> findItems(int pageNumber, int amount) throws ServiceException;
 
     void save(ItemDTO itemDTO) throws ServiceException;
 
     void delete(ItemDTO itemDTO) throws ServiceException;
 
+    void delete(String uniqueNumber) throws ServiceException;
+
     ItemDTO findById(Long id) throws ServiceException, RepositoryException;
 
     ItemDTO findByUniqueNumber(String uniqueNumber) throws RepositoryException, ServiceException;
 
-    Boolean importFromXml(File xml,File xsd);
+    Boolean importFromXml(File xml,File xsd) throws ServiceException;
 
-    Integer getAmountOfItems();
+    Integer getAmountOfItems() throws ServiceException;
 
 }

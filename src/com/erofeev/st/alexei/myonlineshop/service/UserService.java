@@ -10,5 +10,7 @@ public interface UserService {
 
     Integer update(UserDTO userDTO) throws ServiceException;
 
+    void updatePassword(Long id, String oldPassword, String newPassword)  throws ServiceException ;
+
 
 }

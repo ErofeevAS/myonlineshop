@@ -30,7 +30,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public Profile findById(Connection connection, Long id) {
-        String query = "SELECT * FROM items WHERE id=?";
+        String query = "SELECT * FROM profiles WHERE id=?";
         Profile profile = null;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);

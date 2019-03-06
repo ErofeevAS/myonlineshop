@@ -25,7 +25,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <jsp:include page="panel.jsp"></jsp:include>
+            <jsp:include page="util/panel.jsp"></jsp:include>
         </div>
         <div class="col-sm-10">
             <table class="table table-dark">
@@ -42,7 +42,7 @@
                 <tbody>
                 <c:forEach items="${requestScope.orders}" var="order">
                     <tr>
-                        <form action="${pageContext.request.contextPath}/shop?command=myorders&user=${sessionScope.user}"
+                        <form action="${pageContext.request.contextPath}/shop?command=myorders"
                               method="post">
                             <th scope="row">#</th>
                             <td>${order.firstName}</td>
@@ -58,7 +58,7 @@
 
                 </tbody>
                 <tfoot>
-                <jsp:include page="paginator.jsp"></jsp:include>
+                <%--<jsp:include page="util/paginator.jsp"></jsp:include>--%>
                 </tfoot>
             </table>
         </div>

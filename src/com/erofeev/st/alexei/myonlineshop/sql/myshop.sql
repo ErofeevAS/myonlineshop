@@ -14,19 +14,17 @@ DROP TABLE IF EXISTS permissions;
 CREATE TABLE IF NOT EXISTS items
 (
   id            BIGINT auto_increment PRIMARY KEY,
-  name          VARCHAR(255),
-  description   text,
-  UNIQUE_number VARCHAR(255) UNIQUE,
-  price         DECIMAL(10, 4),
-  deleted       BOOLEAN DEFAULT FALSE
+  name          VARCHAR(255) NOT NULL,
+  description   text NOT NULL,
+  UNIQUE_number VARCHAR(255) UNIQUE NOT NULL,
+  price         DECIMAL(10, 4) NOT NULL,
+  deleted       BOOLEAN DEFAULT FALSE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS permissions
 (
   id   BIGINT auto_increment PRIMARY KEY,
-  name ENUM ('CREATE_ITEM', 'CREATE_ORDER', 'DELETE_ITEM', 'DELETE_USER',
-    'UPLOAD_WITH_XML_ITEM','SHOW_ORDER','CHANGE_ORDER_STATUS',
-    'CHANGE_PROFILE','BLOCK_USER','UNBLOCK_USER') NOT NULL
+  name ENUM ('SELLER', 'CUSTOMER') NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS roles
@@ -37,19 +35,19 @@ CREATE TABLE IF NOT EXISTS roles
 
 CREATE TABLE IF NOT EXISTS role_permission
 (
-  role_id       BIGINT,
-  permission_id BIGINT,
+  role_id       BIGINT NOT NULL,
+  permission_id BIGINT NOT NULL,
   PRIMARY KEY (role_id, permission_id)
 );
 
 CREATE TABLE IF NOT EXISTS users
 (
   id       BIGINT auto_increment PRIMARY KEY,
-  email    VARCHAR(255),
-  name     VARCHAR(30),
-  surname  VARCHAR(30),
-  password VARCHAR(255),
-  role_id  BIGINT
+  email    VARCHAR(255) NOT NULL,
+  name     VARCHAR(30) NOT NULL,
+  surname  VARCHAR(30) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role_id  BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS profiles
@@ -63,11 +61,11 @@ CREATE TABLE IF NOT EXISTS profiles
 CREATE TABLE IF NOT EXISTS orders
 (
   id       BIGINT auto_increment PRIMARY KEY,
-  created  TIMESTAMP,
-  quantity int,
+  created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  quantity int NOT NULL,
   status   ENUM ('NEW', 'REVIEWING', 'IN_PROCESS', 'DELIVERED') NOT NULL,
-  user_id  BIGINT,
-  item_id  BIGINT
+  user_id  BIGINT NOT NULL,
+  item_id  BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS stock

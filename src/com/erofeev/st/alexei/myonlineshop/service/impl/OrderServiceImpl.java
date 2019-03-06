@@ -107,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public void changeStatus(OrderDTO orderDTO, StatusEnum status) {
+    public void changeStatus(OrderDTO orderDTO, StatusEnum status) throws RepositoryException, ServiceException {
         Order order = OrderConverter.fromDTO(orderDTO);
         order.setStatus(status);
         try (Connection connection = connectionService.getConnection()) {
@@ -115,7 +115,9 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.update(connection, order, status);
             connection.commit();
         } catch (SQLException e) {
+            String message = "Can't establish connection to database";
             e.printStackTrace();
+            throw new ServiceException(message, e);
         }
     }
 
@@ -136,4 +138,22 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderDTO;
     }
+
+    @Override
+    public Integer getAmountOfOrders() throws ServiceException {
+        Integer amount = null;
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                amount = orderRepository.getAmount(connection);
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            throw new ServiceException(e);
+        }
+        return amount;
+    }
 }
+

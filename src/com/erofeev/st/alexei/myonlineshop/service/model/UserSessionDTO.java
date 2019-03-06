@@ -1,15 +1,13 @@
 package com.erofeev.st.alexei.myonlineshop.service.model;
 
-import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
+import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 
-public class UserDTO {
+public class UserSessionDTO {
     private Long id;
-    private String email;
     private String firstName;
     private String lastName;
-    private String password;
-    private Role role;
-
+    private String email;
+    private Permission permission;
 
     public Long getId() {
         return id;
@@ -35,18 +33,6 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -55,19 +41,22 @@ public class UserDTO {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
     }
 
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "UserSessionDTO{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
+                ", email='" + email + '\'' +
+                ", permission=" + permission +
                 '}';
     }
 }

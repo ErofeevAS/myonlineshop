@@ -22,7 +22,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <jsp:include page="panel.jsp"></jsp:include>
+            <jsp:include page="util/panel.jsp"></jsp:include>
         </div>
         <div class="col-sm-10">
             <table class="table table-dark">
@@ -46,34 +46,9 @@
                     <td>${timestamp}</td>
                     <td>${quantity}</td>
                     <td>${price*quantity}</td>
-
                 </tr>
-
-
                 </tbody>
                 <thead>
-                <div class="page-selector">
-                    <div class="page-per-page">
-                        <span>Result per page</span>
-                        <form class="page-dropdown">
-                            <select name="pageSize">
-                                <option value="5" selected>5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                            </select>
-                        </form>
-                    </div>
-                    <div class="paging">
-                        <span class="current-page">${requestScope.maxpages}</span>
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
                 </thead>
             </table>
         </div>

@@ -1,17 +1,8 @@
 package com.erofeev.st.alexei.myonlineshop.servlet;
 
-import com.erofeev.st.alexei.myonlineshop.config.ConfigurationManager;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl;
-import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
-import com.erofeev.st.alexei.myonlineshop.service.UserService;
-import com.erofeev.st.alexei.myonlineshop.service.impl.LoginRegistrationServiceImpl;
-import com.erofeev.st.alexei.myonlineshop.service.impl.UserServiceImpl;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.CommandEnum;
-import com.erofeev.st.alexei.myonlineshop.servlet.command.exception.CommandNotFound;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.impl.*;
 
 import javax.servlet.RequestDispatcher;
@@ -20,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,12 +23,12 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.ITEMS, new ItemsCommand());
         commands.put(CommandEnum.LOGIN, new LoginCommand());
         commands.put(CommandEnum.REGISTRATION, new RegistrationCommand());
-        commands.put(CommandEnum.ADDITEM, new ItemCommand());
+        commands.put(CommandEnum.ITEMADD, new ItemAddCommand());
+        commands.put(CommandEnum.ITEMSDELETE, new ItemDeleteCommand());
         commands.put(CommandEnum.ORDER, new OrderCommand());
         commands.put(CommandEnum.MYORDERS, new MyOrdersCommand());
         commands.put(CommandEnum.ORDERS, new OrdersCommand());
-
-
+        commands.put(CommandEnum.CHANGEPASSWORD, new ChangePasswordCommand());
     }
 
     @Override
@@ -50,17 +40,14 @@ public class DispatcherServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Command command = commands.get(CommandEnum.getCommand(request));
-        System.out.println(request.getRequestURI());
-        System.out.println("Command from request: " + command.getClass().getSimpleName());
         String page = command.execute(request, response);
-        System.out.println("Command from request: "+ page);
+
         if (page != null) {
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
             dispatcher.forward(request, response);
         } else {
-            page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.INDEX_PAGE_PATH);
-            request.getSession().setAttribute("nullPage", "NULL PAGE ERROR");
-            response.sendRedirect(request.getContextPath() + page);
+//            page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.LOGIN_PAGE);
+//            response.sendRedirect(page);
         }
     }
 

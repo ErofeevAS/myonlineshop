@@ -20,9 +20,15 @@
             <div class="card card-signin my-5">
                 <div class="card-body">
                     <h5 class="card-title text-center">Sign In</h5>
+
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-warning" role="alert">
+                            <c:out value="${error}"></c:out>
+                        </div>
+                    </c:if>
+
                     <form action="${pageContext.request.contextPath}/shop?command=login" method="post"
                           class="form-signin">
-                        <%--<input type="hidden" name="command" value="login"/>--%>
                         <div class="form-label-group">
                             <input type="email" name="email" value="${email}" id="inputEmail" class="form-control"
                                    placeholder="Email address" required autofocus>
@@ -40,7 +46,7 @@
                     </form>
 
                     <div id="register-link" class="text-right">
-                        <a href=" ${pageContext.request.contextPath}/shop?command=registration"class="text-info">registration</a>
+                        <a href=" ${pageContext.request.contextPath}/shop?command=registration" class="text-info">registration</a>
                     </div>
                 </div>
             </div>

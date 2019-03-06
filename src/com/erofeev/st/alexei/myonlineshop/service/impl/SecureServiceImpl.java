@@ -38,8 +38,7 @@ public class SecureServiceImpl implements SecureService {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-//        return generatedPassword;
-        return password;
+        return generatedPassword;
     }
 
     @Override

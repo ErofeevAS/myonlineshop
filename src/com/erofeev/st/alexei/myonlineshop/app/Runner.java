@@ -35,32 +35,32 @@ public class Runner {
         File xsd = new File("items.xsd");
         itemService.importFromXml(xml, xsd);
 
-        SecureService secureService = SecureServiceImpl.getInstance();
-        System.out.println(secureService.hashPassword("1234"));
-        UserLoginDTO userLoginDTO = new UserLoginDTO("sp@gmail.com", "1234");
-        System.out.println("IS USER LOGIN? " + loginRegistrationService.loginUser(userLoginDTO));
-
-
-        UserDTO userDTO = new UserDTO();
-        ItemDTO itemDTO = new ItemDTO();
-        userDTO.setId(1L);
-        itemDTO.setId(10L);
-
-        orderService.create(userDTO, itemDTO, 5);
-        itemDTO.setId(1L);
-        orderService.create(userDTO, itemDTO, 1);
-        itemDTO.setId(2L);
-        orderService.create(userDTO, itemDTO, 50);
-
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setId(1L);
-        orderService.changeStatus(orderDTO, StatusEnum.DELIVERED);
-        System.out.println(orderService.findById(1L));
-        List<OrderDTO > orderDTOList = orderService.showUserOrders(userDTO);
-        for (OrderDTO dto : orderDTOList) {
-            System.out.println(dto);
-        }
-        System.out.println(itemService.getAmountOfItems());
+//        SecureService secureService = SecureServiceImpl.getInstance();
+//        System.out.println(secureService.hashPassword("1234"));
+//        UserLoginDTO userLoginDTO = new UserLoginDTO("sp@gmail.com", "1234");
+//        System.out.println("IS USER LOGIN? " + loginRegistrationService.loginUser(userLoginDTO));
+//
+//
+//        UserDTO userDTO = new UserDTO();
+//        ItemDTO itemDTO = new ItemDTO();
+//        userDTO.setId(1L);
+//        itemDTO.setId(10L);
+//
+//        orderService.create(userDTO, itemDTO, 5);
+//        itemDTO.setId(1L);
+//        orderService.create(userDTO, itemDTO, 1);
+//        itemDTO.setId(2L);
+//        orderService.create(userDTO, itemDTO, 50);
+//
+//        OrderDTO orderDTO = new OrderDTO();
+//        orderDTO.setId(1L);
+//        orderService.changeStatus(orderDTO, StatusEnum.DELIVERED);
+//        System.out.println(orderService.findById(1L));
+//        List<OrderDTO > orderDTOList = orderService.showUserOrders(userDTO);
+//        for (OrderDTO dto : orderDTOList) {
+//            System.out.println(dto);
+//        }
+//        System.out.println(itemService.getAmountOfItems());
 
     }
 

@@ -15,15 +15,18 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final String DATA_BASE_PASSWORD = "database.password";
     public static final String DATA_BASE_SERVERTIMEZONE = "database.serverTimezone";
 
-    public static final String ITEMS_PAGE_PATH = "pages.items";
-    public static final String LOGIN_PAGE_PATH = "pages.login";
-    public static final String INDEX_PAGE_PATH = "pages.index";
-    public static final String ERROR_PAGE_PATH = "pages.error";
-    public static final String REGISTRATION_PAGE_PATH = "pages.registration";
-    public static final String ORDERS_PAGE_PATH = "pages.orders";
-    public static final String ORDER_PAGE_PATH = "pages.order";
-    public static final String MYORDERS_PAGE_PATH = "pages.myorders";
-    public static final String ADDITEM_PAGE_PATH = "pages.additem";
+    public static final String ITEMS_PAGE = "pages.items";
+    public static final String LOGIN_PAGE = "pages.login";
+    public static final String INDEX_PAGE = "pages.index";
+    public static final String ERROR_PAGE = "pages.error";
+    public static final String REGISTRATION_PAGE = "pages.registration";
+    public static final String ORDERS_PAGE = "pages.orders";
+    public static final String ORDER_PAGE = "pages.order";
+    public static final String MYORDERS_PAGE = "pages.myorders";
+    public static final String ITEM_ADD_PAGE = "pages.itemadd";
+    public static final String ITEMS_DELETE_PAGE = "pages.itemsdelete";
+    public static final String CHANGE_PASSWORD_PAGE = "pages.changepassword";
+
 
     private ConfigurationManagerImpl() {
     }

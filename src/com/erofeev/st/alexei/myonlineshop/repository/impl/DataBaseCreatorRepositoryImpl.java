@@ -1,9 +1,9 @@
 package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.DataBaseCreatorRepository;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -25,7 +25,7 @@ public class DataBaseCreatorRepositoryImpl implements DataBaseCreatorRepository 
     }
 
     @Override
-    public Boolean executeQuery(Connection connection, String[] queries) {
+    public Boolean executeQuery(Connection connection, String[] queries) throws RepositoryException {
 
         try (Statement statement = connection.createStatement()) {
             for (String query : queries) {
@@ -34,10 +34,8 @@ public class DataBaseCreatorRepositoryImpl implements DataBaseCreatorRepository 
 
             return true;
         } catch (SQLException e) {
-            System.out.println("Can't create database layer repo: " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't create database layer repo: " + e.getMessage();
+            throw new RepositoryException(message);
         }
-
-        return false;
     }
 }

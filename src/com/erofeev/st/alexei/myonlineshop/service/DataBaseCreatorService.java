@@ -1,10 +1,10 @@
 package com.erofeev.st.alexei.myonlineshop.service;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 
 import java.io.File;
 
 public interface DataBaseCreatorService {
-    Boolean createDataBaseFromFile(File file);
+    void createDataBaseFromFile(File file) throws ServiceException;
 
 }

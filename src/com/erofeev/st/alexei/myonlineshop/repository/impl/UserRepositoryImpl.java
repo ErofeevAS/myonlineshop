@@ -29,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User save(Connection connection, User user) {
+    public User save(Connection connection, User user) throws RepositoryException {
         String query = "INSERT INTO users (email,surname,name,password,role_id) VALUES(?,?,?,?,?)";
         String email = user.getEmail();
         String name = user.getFirstName();
@@ -51,8 +51,8 @@ public class UserRepositoryImpl implements UserRepository {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Can't add item: " + user + " " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't add item: " + user + " " + e.getMessage();
+            throw new RepositoryException(message);
         }
         return user;
     }
@@ -73,19 +73,19 @@ public class UserRepositoryImpl implements UserRepository {
             return amount;
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RepositoryException("Can't update user.",e);
+            String message = "Can't update user." + e.getMessage();
+            throw new RepositoryException(message, e);
         }
     }
 
     @Override
     public Boolean delete(Connection connection, User user) {
-        return null;
+        throw new UnsupportedOperationException();
+
     }
 
     @Override
-    public User findByEmail(Connection connection, String email, boolean isLazy) {
+    public User findByEmail(Connection connection, String email, boolean isLazy) throws RepositoryException {
         String query = "SELECT users.id as user_id, email,surname,users.name,password," +
                 "       roles.id as role_id,roles.name as role_name," +
                 "       permissions.id as permission_id,permissions.name" +
@@ -99,17 +99,14 @@ public class UserRepositoryImpl implements UserRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return getUser(resultSet, isLazy);
             }
-
         } catch (SQLException e) {
-            System.out.println("Can't find user by email: " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't find user by email: " + e.getMessage();
+            throw new RepositoryException(message);
         }
-        return null;
     }
 
     @Override
-    public User findById(Connection connection, Long id, boolean isLazy) {
-
+    public User findById(Connection connection, Long id, boolean isLazy) throws RepositoryException {
         String query = "SELECT users.id as user_id, email,surname,users.name,password," +
                 "       roles.id as role_id,roles.name as role_name," +
                 "       permissions.id as permission_id,permissions.name" +
@@ -123,12 +120,24 @@ public class UserRepositoryImpl implements UserRepository {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return getUser(resultSet, isLazy);
             }
-
         } catch (SQLException e) {
-            System.out.println("Can't find user by id: " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't find user by email: " + e.getMessage();
+            throw new RepositoryException(message);
         }
-        return null;
+    }
+
+    @Override
+    public void updatePassword(Connection connection, Long id, String password) throws RepositoryException {
+        String query = "UPDATE users SET password=? WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, password);
+            ps.setLong(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            String message = "Can't update password" + e.getMessage();
+            throw new RepositoryException(message, e);
+        }
+
     }
 
     private User getUser(ResultSet resultSet, boolean isLazy) throws SQLException {

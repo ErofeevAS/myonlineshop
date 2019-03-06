@@ -3,7 +3,6 @@ package com.erofeev.st.alexei.myonlineshop.servlet.command.impl;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
-import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
@@ -24,7 +23,7 @@ public class RegistrationCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
-        String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE_PATH);
+        String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String firstName = request.getParameter("firstname");
@@ -47,11 +46,12 @@ public class RegistrationCommand implements Command {
                 request.setAttribute("user", regUser);
                 List<ItemDTO> items = itemService.findItems(1, 25);
                 request.setAttribute("items", items);
-                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE_PATH);
+                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE);
             } catch (ServiceException e) {
+                request.setAttribute("error",e.getMessage());
                 System.out.println(e.getMessage());
                 e.printStackTrace();
-                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE_PATH);
+                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
             }
 
         } catch (RepositoryException e) {
