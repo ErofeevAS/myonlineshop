@@ -24,7 +24,7 @@ public class DataBaseCreatorServiceImpl implements DataBaseCreatorService {
 
     public static DataBaseCreatorService getInstance() {
         if (instance == null) {
-            synchronized (DataBaseCreatorService.class) {
+            synchronized (DataBaseCreatorServiceImpl.class) {
                 if (instance == null) {
                     instance = new DataBaseCreatorServiceImpl();
                 }
@@ -37,15 +37,16 @@ public class DataBaseCreatorServiceImpl implements DataBaseCreatorService {
     public void createDataBaseFromFile(File file) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
             String[] queries = fileService.getQueryFromFile(file);
+            connection.setAutoCommit(false);
             try {
                 dataBaseCreatorRepository.executeQuery(connection, queries);
+                connection.commit();
             } catch (RepositoryException e) {
                 throw new ServiceException(e);
             }
         } catch (SQLException e) {
             String message = "Connection to database can't be established";
-            System.out.println(message);
-            throw new ServiceException(e);
+            throw new ServiceException(message, e);
         }
     }
 }

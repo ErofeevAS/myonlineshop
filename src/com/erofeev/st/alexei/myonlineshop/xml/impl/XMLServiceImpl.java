@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public class XMLServiceImpl implements XMLService {
@@ -41,17 +42,40 @@ public class XMLServiceImpl implements XMLService {
                 List<ItemXML> items = itemsXML.getItem();
                 return items;
 
+            } catch (JAXBException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("XML file " + xml + " not valid!");
+        }
+        return null;
+
+    }
+
+    @Override
+    public List<ItemXML> importItemsFromFile(InputStream inputStream, File xsd) {
+        if (XMLValidatorUtil.validateAgainstXSD(inputStream, xsd)) {
+            System.out.println("XML file  valid!");
+            JAXBContext jaxbContext;
+            try {
+                jaxbContext = JAXBContext.newInstance(ItemsXML.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                ItemsXML itemsXML = (ItemsXML) jaxbUnmarshaller.unmarshal(inputStream);
+                List<ItemXML> items = itemsXML.getItem();
+                return items;
 
             } catch (JAXBException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
                 e.printStackTrace();
             }
         } else {
             System.out.println("XML file not valid!");
         }
         return null;
-
     }
 
 }
+
+
 

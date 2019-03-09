@@ -9,6 +9,7 @@ import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ItemConverter {
 
@@ -16,13 +17,11 @@ public class ItemConverter {
         Long id = itemXML.getId();
         String name = itemXML.getName();
         String description = itemXML.getDescription();
-        String uniqueNumber = itemXML.getUniqueNumber();
         BigDecimal price = itemXML.getPrice();
         Item item = new Item();
-        item.setId(id);
         item.setName(name);
         item.setDescription(description);
-        item.setUniqueNumber(uniqueNumber);
+        item.setUniqueNumber(String.valueOf(UUID.randomUUID()));
         item.setPrice(price);
         return item;
     }

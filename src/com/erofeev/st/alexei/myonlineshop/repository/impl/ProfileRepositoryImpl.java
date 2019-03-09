@@ -4,6 +4,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.ProfileRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Profile;
+import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,7 +20,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     public static ProfileRepository getInstance() {
         if (instance == null) {
-            synchronized (ProfileRepository.class) {
+            synchronized (ProfileRepositoryImpl.class) {
                 if (instance == null) {
                     instance = new ProfileRepositoryImpl();
                 }
@@ -29,8 +30,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
-    public Profile findById(Connection connection, Long id) {
-        String query = "SELECT * FROM profiles WHERE id=?";
+    public Profile findById(Connection connection, Long id) throws RepositoryException {
+        String query = "SELECT * FROM profiles WHERE user_id=?";
         Profile profile = null;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);
@@ -41,10 +42,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
             }
             return profile;
         } catch (SQLException e) {
-            System.out.println("Can't find item by id: " + e.getMessage());
-            e.printStackTrace();
+            String message = "Can't find item by id:" + id + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
-        return null;
     }
 
     @Override
@@ -73,23 +73,27 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         String address = profile.getAddress();
         String telephone = profile.getTelephone();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1,address);
-            ps.setString(2,telephone);
-            ps.setLong(3,id);
+            ps.setString(1, address);
+            ps.setString(2, telephone);
+            ps.setLong(3, id);
             Integer amount = ps.executeUpdate();
             return amount;
-        }
-        catch (SQLException e) {
-            System.out.println("Can't update profile: " + e.getMessage());
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Can't updateInfo profile: " + e.getMessage());
             throw new RepositoryException(e);
         }
     }
+
     private Profile getProfile(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("id");
+        Long userId = resultSet.getLong("user_id");
         String address = resultSet.getString("address");
         String telephone = resultSet.getString("telephone");
         Profile profile = new Profile();
+        profile.setAddress(address);
+        profile.setTelephone(telephone);
+        User user = new User();
+        user.setId(userId);
+        profile.setUser(user);
         return profile;
     }
 }

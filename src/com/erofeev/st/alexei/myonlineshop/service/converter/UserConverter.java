@@ -49,14 +49,23 @@ public class UserConverter {
         return userDTO;
     }
 
-    public static UserSessionDTO toSessionDTO(UserDTO userDTO){
+    public static UserSessionDTO toSessionDTO(User user) {
         UserSessionDTO userSessionDTO = new UserSessionDTO();
-        userSessionDTO.setEmail(userDTO.getEmail());
-        userSessionDTO.setFirstName(userDTO.getFirstName());
-        userSessionDTO.setLastName(userDTO.getLastName());
-        userSessionDTO.setId(userDTO.getId());
-        userSessionDTO.setPermission(userDTO.getRole().getPermissions().get(0));
+        userSessionDTO.setEmail(user.getEmail());
+        userSessionDTO.setFirstName(user.getFirstName());
+        userSessionDTO.setLastName(user.getLastName());
+        userSessionDTO.setId(user.getId());
+        userSessionDTO.setPermission(user.getRole().getPermissions().get(0));
         return userSessionDTO;
+    }
+
+    public static UserDTO fromSessionDTO(UserSessionDTO userSessionDTO) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(userSessionDTO.getId());
+        userDTO.setFirstName(userSessionDTO.getFirstName());
+        userDTO.setLastName(userSessionDTO.getLastName());
+        userDTO.setEmail(userSessionDTO.getEmail());
+        return userDTO;
     }
 
 }

@@ -22,6 +22,28 @@
         <url-pattern>/resources/*</url-pattern>
         <url-pattern>/index.html</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>ImportXMLServlet</servlet-name>
+        <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.ImportXMLServlet</servlet-class>
+        <init-param>
+            <param-name>xsd</param-name>
+            <param-value>items.xsd</param-value>
+        </init-param>
+        <init-param>
+            <param-name>dir</param-name>
+            <param-value>/tmp</param-value>
+        </init-param>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>1000000</max-file-size>
+            <max-request-size>2000000</max-request-size>
+            <file-size-threshold>500000</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ImportXMLServlet</servlet-name>
+        <url-pattern>/shop/import</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>LogFilter</filter-name>
@@ -30,6 +52,14 @@
     <filter-mapping>
         <filter-name>LogFilter</filter-name>
         <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>com.erofeev.st.alexei.myonlineshop.servlet.filter.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <servlet-name>DispatcherServlet</servlet-name>
     </filter-mapping>
 
 

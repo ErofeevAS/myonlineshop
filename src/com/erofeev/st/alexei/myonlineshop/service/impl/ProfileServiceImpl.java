@@ -34,8 +34,21 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void save(ProfileDTO profileDTO) {
-
+    public void save(ProfileDTO profileDTO) throws ServiceException {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                Profile profile = ProfileConverter.fromDTO(profileDTO);
+                 profileRepository.save(connection, profile);
+                connection.commit();
+            } catch (RepositoryException | SQLException e) {
+                connection.rollback();
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            String message = "profile service save exception: " + e.getMessage();
+            throw new ServiceException(message, e);
+        }
     }
 
     @Override
@@ -54,20 +67,37 @@ public class ProfileServiceImpl implements ProfileService {
                     break;
                 default:
                     connection.rollback();
-                    String message = "Can't update profile";
+                    String message = "Can't updateInfo profile " + profileDTO;
                     throw new ServiceException(message);
             }
             return amountUpdatedProfiles;
         } catch (RepositoryException e) {
-            String message = "profile service update exception: " + e.getMessage();
-            e.printStackTrace();
+            String message = "profile service updateInfo exception: " + e.getMessage();
             throw new ServiceException(message, e);
         } catch (SQLException e) {
-            String message = "profile service update exception: " + e.getMessage();
-            e.printStackTrace();
-            throw new ServiceException(e);
+            String message = "profile service updateInfo exception: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
 
+    }
+
+    @Override
+    public ProfileDTO findById(Long id) throws ServiceException {
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                Profile profile = profileRepository.findById(connection, id);
+                ProfileDTO profileDTO = ProfileConverter.toDTO(profile);
+                connection.commit();
+                return profileDTO;
+            } catch (RepositoryException | SQLException e) {
+                connection.rollback();
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            String message = "profile service updateInfo exception: " + e.getMessage();
+            throw new ServiceException(message, e);
+        }
     }
 
 }

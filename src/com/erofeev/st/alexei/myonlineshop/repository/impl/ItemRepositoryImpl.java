@@ -76,21 +76,19 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Boolean saveList(Connection connection, List<Item> items) throws RepositoryException {
-        String query = " INSERT INTO items VALUES(?,?,?,?,?,?)";
+        String query = " INSERT INTO items(name, description, unique_number, price, deleted) VALUES(?,?,?,?,?)";
         try {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 for (Item item : items) {
-                    Long id = item.getId();
                     String name = item.getName();
                     String description = item.getDescription();
                     String uniqueNumber = item.getUniqueNumber();
                     BigDecimal price = item.getPrice();
-                    preparedStatement.setLong(1, id);
-                    preparedStatement.setString(2, name);
-                    preparedStatement.setString(3, description);
-                    preparedStatement.setString(4, uniqueNumber);
-                    preparedStatement.setBigDecimal(5, price);
-                    preparedStatement.setBoolean(6, false);
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setString(2, description);
+                    preparedStatement.setString(3, uniqueNumber);
+                    preparedStatement.setBigDecimal(4, price);
+                    preparedStatement.setBoolean(5, false);
                     preparedStatement.addBatch();
                 }
                 preparedStatement.executeBatch();
@@ -119,7 +117,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            String message = "Can't update item: " + item + " " + e.getMessage();
+            String message = "Can't updateInfo item: " + item + " " + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }
@@ -140,7 +138,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Boolean delete(Connection connection, String uniqueNumber) throws RepositoryException {
-        String query = "UPDATE items  SET deleted = TRUE WHERE UNIQUE_number=?";
+        String query = "UPDATE items  SET deleted = TRUE WHERE unique_number=?";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, uniqueNumber);
             ps.executeUpdate();
@@ -171,7 +169,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item findByUniqueNumber(Connection connection, String uniqueNumber) throws RepositoryException {
-        String query = "SELECT * FROM items WHERE UNIQUE_number=?";
+        String query = "SELECT * FROM items WHERE unique_number=?";
         Item item = null;
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, uniqueNumber);

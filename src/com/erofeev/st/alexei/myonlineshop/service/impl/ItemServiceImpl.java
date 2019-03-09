@@ -16,6 +16,7 @@ import com.erofeev.st.alexei.myonlineshop.service.util.UniqueNumberGenerator;
 import com.erofeev.st.alexei.myonlineshop.xml.impl.XMLServiceImpl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,13 +43,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDTO> findItems(int pageNumber, int amount) throws ServiceException {
-        List<ItemDTO> itemDTOList = new ArrayList<>();
-        List<Item> items = null;
+        List<ItemDTO> itemDTOList;
+        List<Item> items;
         try (Connection connection = connectionService.getConnection()) {
-            items = itemRepository.findAll(connection, pageNumber, amount);
-            itemDTOList = ItemConverter.convertList(items);
-        } catch (RepositoryException e) {
-            throw new ServiceException(e);
+            try {
+                connection.setAutoCommit(false);
+                items = itemRepository.findAll(connection, pageNumber, amount);
+                itemDTOList = ItemConverter.convertList(items);
+                connection.commit();
+            } catch (SQLException | RepositoryException e) {
+                connection.rollback();
+                String message = "Can't get items " + e.getMessage() + " Transaction was rollback";
+                throw new ServiceException(message, e);
+            }
         } catch (SQLException e) {
             String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
@@ -140,6 +147,33 @@ public class ItemServiceImpl implements ItemService {
     public Boolean importFromXml(File xml, File xsd) throws ServiceException {
         XMLService xmlService = XMLServiceImpl.getInstance();
         List<ItemXML> itemXMLS = xmlService.importItemsFromFile(xml, xsd);
+        List<Item> items = ItemConverter.convertItemsXMLtoItems(itemXMLS);
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                try {
+                    itemRepository.saveList(connection, items);
+                } catch (RepositoryException e) {
+                    throw new ServiceException(e);
+                }
+                connection.commit();
+                System.out.println("Items was saved");
+                return true;
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Transaction was rollbacked");
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            String message = "Can't establish a connection: " + e.getMessage();
+            throw new ServiceException(message, e);
+        }
+    }
+
+    @Override
+    public Boolean importFromXml(InputStream inputStream, File xsd) throws ServiceException {
+        XMLService xmlService = XMLServiceImpl.getInstance();
+        List<ItemXML> itemXMLS = xmlService.importItemsFromFile(inputStream, xsd);
         List<Item> items = ItemConverter.convertItemsXMLtoItems(itemXMLS);
         try (Connection connection = connectionService.getConnection()) {
             try {

@@ -65,11 +65,9 @@ public class OrderServiceImpl implements OrderService {
             }
             connection.commit();
         } catch (RepositoryException e) {
-            e.printStackTrace();
             throw new ServiceException(e);
         } catch (SQLException e) {
             String message = "order service create exception: " + e.getMessage();
-            e.printStackTrace();
             throw new ServiceException(message, e);
 
         }
@@ -77,26 +75,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> showUserOrders(UserDTO userDTO) {
-        List<OrderDTO> orderDTOList = new ArrayList<>();
+    public List<OrderDTO> getUserOrders(UserDTO userDTO, int pageNumber, int amount) throws ServiceException {
+        List<OrderDTO> orderDTOList;
+        int offset = (pageNumber - 1) * amount;
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
             User user = UserConverter.fromDTO(userDTO);
-            List<Order> orders = orderRepository.findUserOrders(connection, user);
+            List<Order> orders = orderRepository.findUserOrders(connection, user, offset, amount);
             orderDTOList = OrderConverter.convertList(orders);
             connection.commit();
+        } catch (RepositoryException e) {
+            throw new ServiceException(e);
         } catch (SQLException e) {
-            e.printStackTrace();
+            String message = " " + e.getMessage();
+            throw new ServiceException(message, e);
         }
         return orderDTOList;
     }
 
     @Override
     public List<OrderDTO> showAllOrders(int pageNumber, int amount) {
+        int offset = (pageNumber - 1) * amount;
         List<OrderDTO> orderDTOList = new ArrayList<>();
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
-            List<Order> orders = orderRepository.findAll(connection, pageNumber, amount);
+            List<Order> orders = orderRepository.findAll(connection, offset, amount);
             orderDTOList = OrderConverter.convertList(orders);
             connection.commit();
         } catch (SQLException e) {
@@ -116,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
             connection.commit();
         } catch (SQLException e) {
             String message = "Can't establish connection to database";
-            e.printStackTrace();
             throw new ServiceException(message, e);
         }
     }
@@ -132,11 +134,10 @@ public class OrderServiceImpl implements OrderService {
             }
             orderDTO = OrderConverter.toDTO(order);
             connection.commit();
+            return orderDTO;
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new ServiceException("Problem with database connection");
         }
-        return orderDTO;
     }
 
     @Override

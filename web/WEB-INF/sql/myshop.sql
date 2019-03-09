@@ -1,22 +1,13 @@
 CREATE database IF NOT EXISTS myshop;
 
 USE myshop;
-DROP TABLE IF EXISTS stock;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS profiles;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS role_permission;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS permissions;
-
 
 CREATE TABLE IF NOT EXISTS items
 (
   id            BIGINT auto_increment PRIMARY KEY,
   name          VARCHAR(255) NOT NULL,
-  description   text NOT NULL,
-  UNIQUE_number VARCHAR(255) UNIQUE NOT NULL,
+  description   TEXT NOT NULL,
+  unique_number VARCHAR(255) UNIQUE NOT NULL,
   price         DECIMAL(10, 4) NOT NULL,
   deleted       BOOLEAN DEFAULT FALSE NOT NULL
 );
@@ -42,7 +33,7 @@ CREATE TABLE IF NOT EXISTS role_permission
 
 CREATE TABLE IF NOT EXISTS users
 (
-  id       BIGINT auto_increment PRIMARY KEY,
+  id       BIGINT AUTO_INCREMENT PRIMARY KEY,
   email    VARCHAR(255) NOT NULL,
   name     VARCHAR(30) NOT NULL,
   surname  VARCHAR(30) NOT NULL,
@@ -52,7 +43,7 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS profiles
 (
-  id        BIGINT auto_increment PRIMARY KEY,
+  id        BIGINT AUTO_INCREMENT PRIMARY KEY,
   address   VARCHAR(255) NOT NULL ,
   telephone VARCHAR(255) NOT NULL ,
   user_id   BIGINT NOT NULL
@@ -60,20 +51,13 @@ CREATE TABLE IF NOT EXISTS profiles
 
 CREATE TABLE IF NOT EXISTS orders
 (
-  id       BIGINT auto_increment PRIMARY KEY,
+  id       BIGINT AUTO_INCREMENT PRIMARY KEY,
   created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  quantity int NOT NULL,
+  quantity INT NOT NULL,
   status   ENUM ('NEW', 'REVIEWING', 'IN_PROCESS', 'DELIVERED') NOT NULL,
   user_id  BIGINT NOT NULL,
   item_id  BIGINT NOT NULL
 );
-
-CREATE TABLE IF NOT EXISTS stock
-(
-  item_id  BIGINT,
-  quantity int
-);
-
 
 
 ALTER TABLE role_permission
@@ -91,9 +75,6 @@ ALTER TABLE profiles
 
 ALTER TABLE users
   ADD FOREIGN KEY (role_id) REFERENCES roles (id);
-
-ALTER TABLE stock
-  ADD FOREIGN KEY (item_id) REFERENCES items (id);
 
 
 

@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
             }
             return userDTO;
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new ServiceException("Problem with database connection", e);
         } catch (RepositoryException e) {
             throw new ServiceException(e);
@@ -56,13 +55,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer update(UserDTO userDTO) throws ServiceException {
-        String password = secureService.hashPassword(userDTO.getPassword());
+    public Integer updateInfo(UserDTO userDTO) throws ServiceException {
         User user = UserConverter.fromDTO(userDTO);
-        user.setPassword(password);
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
-            Integer amountUpdatedUsers = null;
+            Integer amountUpdatedUsers;
             try {
                 amountUpdatedUsers = userRepository.update(connection, user);
             } catch (RepositoryException e) {
@@ -79,7 +76,7 @@ public class UserServiceImpl implements UserService {
                     break;
                 default:
                     connection.rollback();
-                    String message = "operation failed, too many rows for update, transaction was canceled";
+                    String message = "operation failed, too many rows for updateInfo, transaction was canceled";
                     throw new ServiceException(message);
             }
             return amountUpdatedUsers;
@@ -110,5 +107,29 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User findByEmail(String email, boolean isLazy) throws ServiceException {
+        User user;
+        try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
+            user = userRepository.findByEmail(connection, email, isLazy);
+            if (user == null) {
+                return null;
+            }
+            connection.commit();
+            return user;
+        } catch (RepositoryException e) {
+            throw new ServiceException(e);
+        } catch (SQLException e) {
+            throw new ServiceException("Problem with database connection", e);
+        }
 
+    }
+
+    @Override
+    public Boolean isValidPassword(User user, String password) {
+        String passwordFromDataBase = user.getPassword();
+        String passwordFromWeb = secureService.hashPassword(password);
+        return (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase));
+    }
 }

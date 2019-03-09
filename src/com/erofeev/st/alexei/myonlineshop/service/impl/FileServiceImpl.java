@@ -13,7 +13,7 @@ public class FileServiceImpl implements FileService {
 
     public static FileService getInstance() {
         if (instance == null) {
-            synchronized (FileService.class) {
+            synchronized (FileServiceImpl.class) {
                 if (instance == null) {
                     instance = new FileServiceImpl();
                 }
@@ -25,7 +25,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public String[] getQueryFromFile(File file) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (file.exists()) {
+        if (file.getAbsoluteFile().exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line = reader.readLine();
                 while (line != null) {
@@ -36,9 +36,10 @@ public class FileServiceImpl implements FileService {
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File not exist: " + file);
-                e.getMessage();
+                System.out.println(e.getMessage());
                 e.printStackTrace();
             } catch (IOException e) {
+                System.out.println(e.getMessage());
                 e.printStackTrace();
             }
         }

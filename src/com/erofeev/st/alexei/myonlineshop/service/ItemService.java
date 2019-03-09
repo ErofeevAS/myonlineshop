@@ -6,6 +6,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public interface ItemService {
@@ -22,7 +23,9 @@ public interface ItemService {
 
     ItemDTO findByUniqueNumber(String uniqueNumber) throws RepositoryException, ServiceException;
 
-    Boolean importFromXml(File xml,File xsd) throws ServiceException;
+    Boolean importFromXml(File xml, File xsd) throws ServiceException;
+
+    Boolean importFromXml(InputStream inputStream, File xsd) throws ServiceException;
 
     Integer getAmountOfItems() throws ServiceException;
 

@@ -6,6 +6,7 @@ import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.service.impl.ItemServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
+import com.erofeev.st.alexei.myonlineshop.servlet.command.util.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class ItemDeleteCommand implements Command {
             Integer page = Integer.valueOf(pageString);
             Integer amount = Integer.valueOf(amountString);
             Integer amountOfItems = itemService.getAmountOfItems();
-            Integer maxPages = getMaxPage(amountOfItems, amount);
+            Integer maxPages = Validator.getMaxPage(amountOfItems, amount);
             if ((page <= 1) || (page > maxPages)) {
                 page = DEFAULT_PAGE_NUMBER;
             }
@@ -44,7 +45,7 @@ public class ItemDeleteCommand implements Command {
             request.setAttribute("items", items);
             request.setAttribute("maxpages", maxPages);
             String uniqueNumber = request.getParameter("uniquenumber");
-            if(uniqueNumber==null){
+            if (uniqueNumber == null) {
                 return ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_DELETE_PAGE);
             }
             itemService.delete(uniqueNumber);
@@ -62,13 +63,4 @@ public class ItemDeleteCommand implements Command {
     }
 
 
-    private Integer getMaxPage(Integer amountOfItems, Integer amountOnPage) {
-        Integer maxPages = null;
-        if (amountOfItems % amountOnPage == 0) {
-            maxPages = amountOfItems / amountOnPage;
-        } else {
-            maxPages = amountOfItems / amountOnPage + 1;
-        }
-        return maxPages;
-    }
 }

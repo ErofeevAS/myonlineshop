@@ -6,9 +6,11 @@ import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 public interface ProfileService {
 
 
-    void save(ProfileDTO profileDTO);
+    void save(ProfileDTO profileDTO) throws ServiceException;
 
     Integer update(ProfileDTO profileDTO) throws ServiceException;
+
+    ProfileDTO findById(Long id) throws ServiceException;
 
 
 

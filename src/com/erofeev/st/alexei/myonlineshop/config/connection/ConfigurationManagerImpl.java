@@ -1,7 +1,11 @@
 package com.erofeev.st.alexei.myonlineshop.config.connection;
 
 import com.erofeev.st.alexei.myonlineshop.config.ConfigurationManager;
+import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
+import com.erofeev.st.alexei.myonlineshop.service.DataBaseCreatorService;
+import com.erofeev.st.alexei.myonlineshop.service.impl.DataBaseCreatorServiceImpl;
 
+import java.io.File;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -18,14 +22,14 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final String ITEMS_PAGE = "pages.items";
     public static final String LOGIN_PAGE = "pages.login";
     public static final String INDEX_PAGE = "pages.index";
-    public static final String ERROR_PAGE = "pages.error";
     public static final String REGISTRATION_PAGE = "pages.registration";
     public static final String ORDERS_PAGE = "pages.orders";
     public static final String ORDER_PAGE = "pages.order";
-    public static final String MYORDERS_PAGE = "pages.myorders";
+    public static final String MY_ORDERS_PAGE = "pages.myorders";
     public static final String ITEM_ADD_PAGE = "pages.itemadd";
     public static final String ITEMS_DELETE_PAGE = "pages.itemsdelete";
     public static final String CHANGE_PASSWORD_PAGE = "pages.changepassword";
+    public static final String PROFILE_MENU = "pages.profile_menu";
 
 
     private ConfigurationManagerImpl() {
@@ -36,6 +40,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
             synchronized (ConfigurationManagerImpl.class) {
                 if (instance == null) {
                     instance = new ConfigurationManagerImpl();
+
                     instance.resourceBundle = PropertyResourceBundle.getBundle(DATA_BASE_CONFIG);
                 }
             }

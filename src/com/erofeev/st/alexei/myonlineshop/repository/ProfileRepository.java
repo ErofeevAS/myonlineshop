@@ -6,7 +6,7 @@ import com.erofeev.st.alexei.myonlineshop.repository.model.Profile;
 import java.sql.Connection;
 
 public interface ProfileRepository {
-    Profile findById(Connection connection, Long id);
+    Profile findById(Connection connection, Long id) throws RepositoryException;
 
     Integer save(Connection connection, Profile profile) throws RepositoryException;
 

@@ -16,7 +16,7 @@ public interface OrderService {
 
     OrderDTO create(UserDTO userDTO, ItemDTO itemDTO, int quantity) throws ServiceException;
 
-    List<OrderDTO> showUserOrders(UserDTO userDTO);
+    List<OrderDTO> getUserOrders(UserDTO userDTO, int pageNumber, int amount) throws ServiceException;
 
     List<OrderDTO> showAllOrders(int pageNumber, int amount);
 

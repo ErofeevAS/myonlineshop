@@ -4,10 +4,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/login.css">
 	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />" />
 	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
 	<title>Login</title>
@@ -27,34 +23,72 @@
 								<c:out value="${error}"></c:out>
 							</div>
 						</c:if>
+						<c:if test="${not empty info}">
+							<div class="alert alert-warning" role="alert">
+								<c:out value="${info}"></c:out>
+							</div>
+						</c:if>
 						<form action= ${pageContext.request.contextPath}/shop?command=registration method="post" class="form-signin" >
 							<input type="hidden" name="command" value="registration"/>
+							<c:if test="${not empty messages.email}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.email}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
-								<input type="Email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required autofocus>
+								<input type="email" id="inputEmail" class="form-control" name="email" placeholder="Email address" required autofocus>
 								<label for="inputEmail">Email address</label>
 							</div>
-
+							<c:if test="${not empty messages.password}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.password}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
 								<label for="inputPassword">Password</label>
 							</div>
+							<c:if test="${not empty messages.password}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.password}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="password" id="inputRePassword" class="form-control" name="repassword" placeholder="Repeat password" required>
 								<label for="inputRePassword">Repaet password</label>
 							</div>
-
+							<c:if test="${not empty messages.firstname}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.firstname}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="text" id="inputFirstName" class="form-control" name="firstname" placeholder="Frist Name" required autofocus>
 								<label for="inputFirstName">First Name</label>
 							</div>
+							<c:if test="${not empty messages.lastname}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.lastname}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="text" id="inputLastName" class="form-control" name="lastname"placeholder="Last Name" required autofocus>
 								<label for="inputLastName">Last Name</label>
 							</div>
+							<c:if test="${not empty messages.address}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.address}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="text" id="inputAddress" class="form-control" name="address"placeholder="Address" required autofocus>
 								<label for="inputAddress">Address</label>
 							</div>
+							<c:if test="${not empty messages.telephone}">
+								<div class="alert alert-warning" role="alert">
+									<c:out value="${messages.telephone}"></c:out>
+								</div>
+							</c:if>
 							<div class="form-label-group">
 								<input type="text" id="telephone" class="form-control" name="telephone"placeholder="Telephone" required autofocus>
 								<label for="telephone">Telephone</label>

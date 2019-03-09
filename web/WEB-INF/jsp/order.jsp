@@ -3,11 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/login.css">
+    <%--<meta charset="utf-8">--%>
+    <%--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">--%>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <title>Login</title>
@@ -22,7 +19,17 @@
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <jsp:include page="util/panel.jsp"></jsp:include>
+            <c:choose>
+                <c:when test="${user.permission.name == 'CUSTOMER' }">
+                    <jsp:include page="util/customer_panel.jsp"></jsp:include>
+                </c:when>
+                <c:when test="${user.permission.name == 'SELLER'}">
+                    <jsp:include page="util/seller_panel.jsp"></jsp:include>
+                </c:when>
+                <c:otherwise>
+                    <jsp:include page="util/customer_panel.jsp"></jsp:include>
+                </c:otherwise>
+            </c:choose>
         </div>
         <div class="col-sm-10">
             <table class="table table-dark">

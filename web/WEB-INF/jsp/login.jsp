@@ -3,10 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/login.css">
+    <%--<meta charset="utf-8">--%>
+    <%--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">--%>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <title>Login</title>
@@ -26,7 +24,11 @@
                             <c:out value="${error}"></c:out>
                         </div>
                     </c:if>
-
+                    <c:if test="${not empty messages.email}">
+                        <div class="alert alert-warning" role="alert">
+                            <c:out value="${messages.email}"></c:out>
+                        </div>
+                    </c:if>
                     <form action="${pageContext.request.contextPath}/shop?command=login" method="post"
                           class="form-signin">
                         <div class="form-label-group">
@@ -34,7 +36,11 @@
                                    placeholder="Email address" required autofocus>
                             <label for="inputEmail">Email address</label>
                         </div>
-
+                        <c:if test="${not empty messages.password}">
+                            <div class="alert alert-warning" role="alert">
+                                <c:out value="${messages.password}"></c:out>
+                            </div>
+                        </c:if>
                         <div class="form-label-group">
                             <input type="password" name="password" value="${password}" id="inputPassword"
                                    class="form-control" placeholder="Password" required>
@@ -46,7 +52,9 @@
                     </form>
 
                     <div id="register-link" class="text-right">
-                        <a href=" ${pageContext.request.contextPath}/shop?command=registration" class="text-info">registration</a>
+                        <form action="${pageContext.request.contextPath}/shop?command=registration_page" method="post">
+                            <button type="submit" class="btn btn-link">registration</button>
+                        </form>
                     </div>
                 </div>
             </div>

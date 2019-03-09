@@ -16,7 +16,7 @@ public interface OrderRepository {
 
     Boolean update(Connection connection, Order order, StatusEnum status) throws RepositoryException;
 
-    List<Order> findUserOrders(Connection connection, User user);
+    List<Order> findUserOrders(Connection connection, User user, int pageNumber, int amount) throws RepositoryException;
 
     List<Order> findAll(Connection connection, int pageNumber, int amount);
 

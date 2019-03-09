@@ -92,7 +92,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            String message = "Can't update order: " + order + " " + e.getMessage();
+            String message = "Can't updateInfo order: " + order + " " + e.getMessage();
             e.printStackTrace();
             throw new RepositoryException(message, e);
         }
@@ -100,29 +100,30 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findUserOrders(Connection connection, User user) {
+    public List<Order> findUserOrders(Connection connection, User user, int offset, int amount) throws RepositoryException {
         Long id = user.getId();
-        List<Order> orders = new ArrayList<>();
+        List<Order> orders;
         String query = "SELECT orders.id as id,status,created, users.id as user_id,email,users.name as firstname,users.surname as lastname," +
                 "        items.id as items_id, items.name as item_name,description,quantity, items.price as price,UNIQUE_number" +
                 "       FROM orders" +
                 "       JOIN items ON orders.item_id = items.id" +
-                "       JOIN  users  ON users.id = orders.user_id where users.id=?";
+                "       JOIN  users  ON users.id = orders.user_id where users.id=? LIMIT ?,? ";
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);
+            ps.setLong(2, offset);
+            ps.setLong(3, amount);
             ResultSet resultSet = ps.executeQuery();
             orders = getOrder(resultSet);
+            return orders;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            String message = "Can't get orders for user with id: " + id;
+            throw new RepositoryException(message);
         }
-        return orders;
     }
 
     @Override
-    public List<Order> findAll(Connection connection, int pageNumber, int amount) {
+    public List<Order> findAll(Connection connection, int offset, int amount) {
         List<Order> orders = new ArrayList<>();
-        int offset = (pageNumber - 1) * amount;
         String query = "SELECT orders.id as id,status,created, users.id as user_id,email,users.name as firstname,users.surname as lastname," +
                 "        items.id as items_id, items.name as item_name,description,quantity, items.price as price,UNIQUE_number" +
                 "       FROM orders" +

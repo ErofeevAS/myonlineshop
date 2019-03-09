@@ -61,10 +61,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                 } catch (RepositoryException e) {
                     throw new ServiceException(e);
                 }
-                connection.commit();
-//                if (user == null) {
-//                    return userDTO;
-//                }
+
                 userDTO = UserConverter.toDTO(user);
                 String passwordFromDataBase = user.getPassword();
                 passwordFromWeb = secureService.hashPassword(passwordFromWeb);
@@ -73,7 +70,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                 } else {
                     userDTO = null;
                 }
-
+                connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
                 String message = "transaction was rollback";
@@ -86,7 +83,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
     }
 
     @Override
-    public void registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO) throws RepositoryException, ServiceException {
+    public void registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO, Role role) throws RepositoryException, ServiceException {
         User user = null;
         String email = userRegistrationDTO.getEmail();
         String password = userRegistrationDTO.getPassword();
@@ -98,8 +95,6 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
                     String hashedPassword = secureService.hashPassword(password);
                     userRegistrationDTO.setPassword(hashedPassword);
                     user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
-                    Role role = new Role("user");
-                    role.setId(1L);
                     user.setRole(role);
                     user = userRepository.save(connection, user);
                     Long userId = user.getId();

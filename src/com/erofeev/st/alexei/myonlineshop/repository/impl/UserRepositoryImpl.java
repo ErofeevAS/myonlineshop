@@ -59,21 +59,19 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Integer update(Connection connection, User user) throws RepositoryException {
-        String query = "UPDATE users SET name=?,surname=?,password=? WHERE id=?";
+        String query = "UPDATE users SET name=?,surname=? WHERE id=?";
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
-        String password = user.getPassword();
         Long id = user.getId();
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, firstName);
             ps.setString(2, lastName);
-            ps.setString(3, password);
-            ps.setLong(4, id);
+            ps.setLong(3, id);
             Integer amount = ps.executeUpdate();
             return amount;
 
         } catch (SQLException e) {
-            String message = "Can't update user." + e.getMessage();
+            String message = "Can't updateInfo user." + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }
@@ -134,7 +132,7 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setLong(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            String message = "Can't update password" + e.getMessage();
+            String message = "Can't updateInfo password" + e.getMessage();
             throw new RepositoryException(message, e);
         }
 
@@ -144,7 +142,6 @@ public class UserRepositoryImpl implements UserRepository {
         List<Permission> permissions = new ArrayList<>();
         User user = null;
         Role role = null;
-        Long oldUserId = null;
         while (resultSet.next()) {
             Long userId = resultSet.getLong(1);
             String userEmail = resultSet.getString(2);
