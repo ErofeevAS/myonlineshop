@@ -31,11 +31,10 @@ public class DataBaseCreatorRepositoryImpl implements DataBaseCreatorRepository 
             for (String query : queries) {
                 statement.executeUpdate(query);
             }
-
             return true;
         } catch (SQLException e) {
             String message = "Can't create database layer repo: " + e.getMessage();
-            throw new RepositoryException(message);
+            throw new RepositoryException(message, e);
         }
     }
 }

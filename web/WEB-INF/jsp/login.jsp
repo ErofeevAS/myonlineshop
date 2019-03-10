@@ -3,8 +3,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%--<meta charset="utf-8">--%>
-    <%--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">--%>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <title>Login</title>

@@ -1,8 +1,8 @@
 package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
-import com.erofeev.st.alexei.myonlineshop.repository.OrderRepository;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.OrderRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.OrderRepositoryImpl;
@@ -17,13 +17,11 @@ import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO create(UserDTO userDTO, ItemDTO itemDTO, int quantity) throws ServiceException {
-        Order createdOrder = null;
+        Order createdOrder;
         Date createdDate = new Date(Calendar.getInstance().getTime().getTime());
         Timestamp param = new Timestamp(createdDate.getTime());
         Order order = new Order();
@@ -94,18 +92,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> showAllOrders(int pageNumber, int amount) {
+    public List<OrderDTO> showAllOrders(int pageNumber, int amount) throws ServiceException {
         int offset = (pageNumber - 1) * amount;
-        List<OrderDTO> orderDTOList = new ArrayList<>();
+        List<OrderDTO> orderDTOList;
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
             List<Order> orders = orderRepository.findAll(connection, offset, amount);
             orderDTOList = OrderConverter.convertList(orders);
             connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            return orderDTOList;
+        } catch (SQLException | RepositoryException e) {
+            throw new ServiceException(e);
         }
-        return orderDTOList;
+
     }
 
 
@@ -125,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO findById(Long id) throws ServiceException {
-        OrderDTO orderDTO = null;
+        OrderDTO orderDTO;
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
             Order order = orderRepository.findById(connection, id);
@@ -135,14 +134,14 @@ public class OrderServiceImpl implements OrderService {
             orderDTO = OrderConverter.toDTO(order);
             connection.commit();
             return orderDTO;
-        } catch (SQLException e) {
-            throw new ServiceException("Problem with database connection");
+        } catch (SQLException | RepositoryException e) {
+            throw new ServiceException(e);
         }
     }
 
     @Override
     public Integer getAmountOfOrders() throws ServiceException {
-        Integer amount = null;
+        Integer amount;
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
             try {

@@ -2,13 +2,13 @@ package com.erofeev.st.alexei.myonlineshop.service.impl;
 
 import com.erofeev.st.alexei.myonlineshop.config.ConnectionService;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConnectionServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.impl.UserRepositoryImpl;
+import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.SecureService;
 import com.erofeev.st.alexei.myonlineshop.service.UserService;
-import com.erofeev.st.alexei.myonlineshop.repository.UserRepository;
-import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(Long id, String oldPassword, String newPassword) throws ServiceException {
-        User user = null;
+        User user;
         try (Connection connection = connectionService.getConnection()) {
             user = userRepository.findById(connection, id, true);
             String passwordFromDataBase = user.getPassword();
@@ -100,9 +100,7 @@ public class UserServiceImpl implements UserService {
                 String message = "Wrong password";
                 throw new ServiceException(message);
             }
-        } catch (SQLException e) {
-            throw new ServiceException(e);
-        } catch (RepositoryException e) {
+        } catch (SQLException | RepositoryException e) {
             throw new ServiceException(e);
         }
     }
@@ -131,5 +129,22 @@ public class UserServiceImpl implements UserService {
         String passwordFromDataBase = user.getPassword();
         String passwordFromWeb = secureService.hashPassword(password);
         return (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase));
+    }
+
+    @Override
+    public Integer getAmountOfUser() throws ServiceException {
+        Integer amount;
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                amount = userRepository.getAmount(connection);
+                connection.commit();
+                return amount;
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            throw new ServiceException("Problem with database connection", e);
+        }
     }
 }

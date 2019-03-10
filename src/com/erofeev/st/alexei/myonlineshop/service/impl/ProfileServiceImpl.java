@@ -39,7 +39,7 @@ public class ProfileServiceImpl implements ProfileService {
             try {
                 connection.setAutoCommit(false);
                 Profile profile = ProfileConverter.fromDTO(profileDTO);
-                 profileRepository.save(connection, profile);
+                profileRepository.save(connection, profile);
                 connection.commit();
             } catch (RepositoryException | SQLException e) {
                 connection.rollback();
@@ -59,8 +59,8 @@ public class ProfileServiceImpl implements ProfileService {
             Integer amountUpdatedProfiles = profileRepository.update(connection, profile);
             switch (amountUpdatedProfiles) {
                 case 0:
-                    System.out.println("");
-                    break;
+                    connection.rollback();
+                    throw new ServiceException("profile with id: " + profileDTO.getId() + " not found ");
                 case 1:
                     System.out.println("profile was updated");
                     connection.commit();
@@ -71,14 +71,10 @@ public class ProfileServiceImpl implements ProfileService {
                     throw new ServiceException(message);
             }
             return amountUpdatedProfiles;
-        } catch (RepositoryException e) {
-            String message = "profile service updateInfo exception: " + e.getMessage();
-            throw new ServiceException(message, e);
-        } catch (SQLException e) {
+        } catch (RepositoryException | SQLException e) {
             String message = "profile service updateInfo exception: " + e.getMessage();
             throw new ServiceException(message, e);
         }
-
     }
 
     @Override
@@ -87,6 +83,9 @@ public class ProfileServiceImpl implements ProfileService {
             try {
                 connection.setAutoCommit(false);
                 Profile profile = profileRepository.findById(connection, id);
+                if (profile == null) {
+                    throw new ServiceException("profile with id: " + id + "not found ");
+                }
                 ProfileDTO profileDTO = ProfileConverter.toDTO(profile);
                 connection.commit();
                 return profileDTO;

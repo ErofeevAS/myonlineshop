@@ -1,5 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.servlet.command;
 
+import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.sun.deploy.net.HttpRequest;
 import com.sun.deploy.net.HttpResponse;
@@ -10,6 +11,6 @@ import java.io.IOException;
 
 public interface Command {
 
-    String execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, RepositoryException, ServiceException;
 
 }

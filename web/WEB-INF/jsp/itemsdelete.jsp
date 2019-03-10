@@ -35,6 +35,11 @@
                 </c:otherwise>
             </c:choose>
         </div>
+        <c:if test="${not empty error}">
+            <div class="alert alert-warning" role="alert">
+                <c:out value="${error}"></c:out>
+            </div>
+        </c:if>
         <div class="col-sm-10">
             <table class="table table-dark">
                 <thead>

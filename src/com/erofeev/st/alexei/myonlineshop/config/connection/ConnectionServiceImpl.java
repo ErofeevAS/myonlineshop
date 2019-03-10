@@ -17,8 +17,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     private ConnectionServiceImpl() {
         System.out.println("loading jdbc driver...");
         try {
-            String jdbcDriverName = DATA_BASE_DRIVER_NAME;
-            Class.forName(configurationManager.getProperty(jdbcDriverName));
+            Class.forName(configurationManager.getProperty(DATA_BASE_DRIVER_NAME));
             System.out.println("loading jdbc driver successful");
         } catch (ClassNotFoundException e) {
             System.out.println("Can't load jdbc driver");
@@ -46,17 +45,14 @@ public class ConnectionServiceImpl implements ConnectionService {
         properties.setProperty("user", configurationManager.getProperty(DATA_BASE_USERNAME));
         properties.setProperty("password", configurationManager.getProperty(DATA_BASE_PASSWORD));
         properties.setProperty("serverTimezone", configurationManager.getProperty(DATA_BASE_SERVERTIMEZONE));
-
-        Connection connection = null;
+        Connection connection;
         try {
             connection = DriverManager.getConnection(dataBaseUrl, properties);
             System.out.println("Connection to dataBase was successful");
             return connection;
         } catch (SQLException e) {
-            System.out.println("Can't connect to dataBase");
-            e.getMessage();
-            e.printStackTrace();
-            throw new RuntimeException();
+            String message = "Can't connect to dataBase " + e.getMessage();
+            throw new RuntimeException(message, e);
         }
     }
 }

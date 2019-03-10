@@ -5,39 +5,22 @@ import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class LoginValidatorImpl implements Validator {
+public class LoginValidator extends Validator {
     private static volatile Validator instance = null;
 
-    private LoginValidatorImpl() {
+    private LoginValidator() {
     }
 
     public static Validator getInstance() {
         if (instance == null) {
-            synchronized (LoginValidatorImpl.class) {
+            synchronized (LoginValidator.class) {
                 if (instance == null) {
-                    instance = new LoginValidatorImpl();
+                    instance = new LoginValidator();
                 }
             }
         }
         return instance;
-    }
-
-    private final static Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-    private boolean validateEmail(String email) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        return matcher.find();
-    }
-
-    private boolean isNull(String text) {
-        if ("".equals(text) || (text == null)) {
-            return true;
-        }
-        return false;
     }
 
     public Boolean isRequestValid(HttpServletRequest request) {
@@ -46,17 +29,17 @@ public class LoginValidatorImpl implements Validator {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         if (isNull(email)) {
-            messages.put("email", "email must be not empty");
+            messages.put("email", MESSAGE_NOT_NULL);
             isValid = false;
 
         } else {
-            if (!validateEmail(email)) {
-                messages.put("email", "wrong pattern for email");
+            if (!isEmailValid(email)) {
+                messages.put("email", MESSAGE_EMAIL_FORMAT);
                 isValid = false;
             }
         }
         if (isNull(password)) {
-            messages.put("password", "password must be not empty");
+            messages.put("password", MESSAGE_NOT_NULL);
             isValid = false;
         }
         request.setAttribute("messages", messages);

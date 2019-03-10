@@ -11,4 +11,6 @@ public interface XMLService {
 
     List<ItemXML> importItemsFromFile(InputStream inputStream, File xsd);
 
+    Boolean isValidXML(InputStream inputStream, File xsd);
+
 }

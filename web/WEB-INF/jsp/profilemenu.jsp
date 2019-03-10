@@ -59,7 +59,7 @@
                             <input type="text" id="inputAddress" class="form-control" name="address"
                                    value="${profile.address}"
                                    required>
-                            <label for="inputAddress">Last Name</label>
+                            <label for="inputAddress">Address</label>
                         </div>
                         <c:if test="${not empty messages.telephone}">
                             <div class="alert alert-warning" role="alert">

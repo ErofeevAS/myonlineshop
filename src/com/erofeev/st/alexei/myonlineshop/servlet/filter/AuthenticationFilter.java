@@ -16,22 +16,20 @@ import java.util.Set;
 public class AuthenticationFilter implements Filter {
     private static final Set<CommandEnum> CUSTOMER_AVAILABLE = new HashSet<>();
     private static final Set<CommandEnum> SELLER_AVAILABLE = new HashSet<>();
-    public static final String LOGIN_PATH = "/index.jsp";
+    private static final String LOGIN_PATH = "/index.jsp";
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         CUSTOMER_AVAILABLE.add(CommandEnum.ITEMS);
         CUSTOMER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD);
         CUSTOMER_AVAILABLE.add(CommandEnum.ORDER);
         CUSTOMER_AVAILABLE.add(CommandEnum.MY_ORDERS);
         CUSTOMER_AVAILABLE.add(CommandEnum.LOGOUT);
-        CUSTOMER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD);
         CUSTOMER_AVAILABLE.add(CommandEnum.REGISTRATION_PAGE);
         CUSTOMER_AVAILABLE.add(CommandEnum.REGISTRATION);
         CUSTOMER_AVAILABLE.add(CommandEnum.PROFILE_MENU);
         CUSTOMER_AVAILABLE.add(CommandEnum.PROFILE_MENU_CHANGE);
 
-//        SELLER_AVAILABLE.add(CommandEnum.ITEMS);
         SELLER_AVAILABLE.add(CommandEnum.ITEMS_DELETE);
         SELLER_AVAILABLE.add(CommandEnum.ITEM_ADD);
         SELLER_AVAILABLE.add(CommandEnum.ADD_ITEM_PAGE);

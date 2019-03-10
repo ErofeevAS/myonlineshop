@@ -57,12 +57,18 @@
                     <tr>
                         <form action="${pageContext.request.contextPath}/shop?command=order"
                               method="post">
-                            <th scope="row">${count+(page-1)*amount}</th>
-                            <td>${item.name}</td>
-                            <td>${item.description}</td>
-                            <td>${item.price}</td>
+                            <th scope="row"><c:out value="${count+(page-1)*amount}"></c:out></th>
+                            <td><c:out value="${item.name}"></c:out></td>
+                            <td><c:out value="${item.description}"></c:out></td>
+                            <td><c:out value="${item.price}"></c:out></td>
                             <input type="hidden" name="uniquenumber" value="${item.uniqueNumber}">
-                            <td><input type="number" min="0" name="quantity"><br>
+                            <td>
+                                <c:if test="${not empty messages.quantity}">
+                                    <div class="alert alert-warning" role="alert">
+                                        <c:out value="${messages.quantity}"></c:out>
+                                    </div>
+                                </c:if>
+                                <input type="number" min="0" name="quantity"><br>
                             </td>
                             <td style="display: none">${item.uniqueNumber}</td>
                             <td>

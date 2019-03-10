@@ -2,11 +2,9 @@ package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.ProfileRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
-import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Profile;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,11 +55,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
             ps.setLong(1, id);
             ps.setString(2, address);
             ps.setString(3, telephone);
-            Integer amount = ps.executeUpdate();
-            return amount;
+            return ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Can't save profile in database: " + e.getMessage());
-            e.printStackTrace();
             throw new RepositoryException(e);
         }
     }
@@ -76,8 +72,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
             ps.setString(1, address);
             ps.setString(2, telephone);
             ps.setLong(3, id);
-            Integer amount = ps.executeUpdate();
-            return amount;
+            return ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Can't updateInfo profile: " + e.getMessage());
             throw new RepositoryException(e);

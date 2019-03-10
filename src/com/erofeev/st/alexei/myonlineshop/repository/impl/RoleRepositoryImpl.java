@@ -2,13 +2,14 @@ package com.erofeev.st.alexei.myonlineshop.repository.impl;
 
 import com.erofeev.st.alexei.myonlineshop.repository.RoleRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
-import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
+import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.enums.Permissions;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class RoleRepositoryImpl implements RoleRepository {
     private static volatile RoleRepository instance = null;
@@ -29,17 +30,17 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Role save(Connection connection, Role role) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Role update(Connection connection, Role role) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Boolean delete(Connection connection, Role role) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -52,13 +53,11 @@ public class RoleRepositoryImpl implements RoleRepository {
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
-                Role role = getRole(rs);
-                return role;
+                return getRole(rs);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RepositoryException(e);
+            String message = "Can't find role by id:" + name + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
     }
 
@@ -68,18 +67,15 @@ public class RoleRepositoryImpl implements RoleRepository {
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                Role role = getRole(rs);
-                return role;
+                return getRole(rs);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RepositoryException(e);
+            String message = "Can't find role by id:" + id + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
     }
 
     private Role getRole(ResultSet resultSet) throws SQLException {
-        List<Permission> permissions = new ArrayList<>();
         Role role = new Role();
         while (resultSet.next()) {
             Long id = resultSet.getLong(1);

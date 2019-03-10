@@ -26,15 +26,11 @@
         <servlet-name>ImportXMLServlet</servlet-name>
         <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.ImportXMLServlet</servlet-class>
         <init-param>
-            <param-name>xsd</param-name>
-            <param-value>items.xsd</param-value>
-        </init-param>
-        <init-param>
-            <param-name>dir</param-name>
-            <param-value>/tmp</param-value>
+            <param-name>xsdPath</param-name>
+            <param-value>/WEB-INF/items.xsd</param-value>
         </init-param>
         <multipart-config>
-            <location>/tmp</location>
+            <location>C:\temp</location>
             <max-file-size>1000000</max-file-size>
             <max-request-size>2000000</max-request-size>
             <file-size-threshold>500000</file-size-threshold>

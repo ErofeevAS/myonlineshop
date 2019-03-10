@@ -12,13 +12,13 @@ public interface OrderRepository {
 
     Order save(Connection connection, Order order) throws RepositoryException;
 
-    Order findById(Connection connection, Long id);
+    Order findById(Connection connection, Long id) throws RepositoryException;
 
     Boolean update(Connection connection, Order order, StatusEnum status) throws RepositoryException;
 
     List<Order> findUserOrders(Connection connection, User user, int pageNumber, int amount) throws RepositoryException;
 
-    List<Order> findAll(Connection connection, int pageNumber, int amount);
+    List<Order> findAll(Connection connection, int pageNumber, int amount) throws RepositoryException;
 
     Integer getAmount(Connection connection) throws RepositoryException;
 }

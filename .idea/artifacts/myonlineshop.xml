@@ -13,6 +13,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/sql/myshop.sql" />
           <element id="file-copy" path="$PROJECT_DIR$/sql/populate_table.sql" />
         </element>
+        <element id="file-copy" path="$PROJECT_DIR$/items.xsd" />
       </element>
     </root>
   </artifact>

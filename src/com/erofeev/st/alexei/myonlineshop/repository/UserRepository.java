@@ -2,10 +2,8 @@ package com.erofeev.st.alexei.myonlineshop.repository;
 
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
 
 import java.sql.Connection;
-import java.util.List;
 
 public interface UserRepository {
 
@@ -20,4 +18,6 @@ public interface UserRepository {
     User findById(Connection connection, Long id, boolean isLazy) throws RepositoryException;
 
     void updatePassword(Connection connection, Long id, String password) throws RepositoryException;
+
+    Integer getAmount(Connection connection) throws RepositoryException;
 }

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemValidator implements Validator {
+public class ItemValidator extends Validator {
     private static volatile Validator instance = null;
 
     private ItemValidator() {
@@ -24,7 +24,6 @@ public class ItemValidator implements Validator {
         return instance;
     }
 
-    @Override
     public Boolean isRequestValid(HttpServletRequest request) {
         boolean isValid = true;
         Map<String, String> messages = new HashMap<>();
@@ -33,31 +32,30 @@ public class ItemValidator implements Validator {
         String priceString = request.getParameter("price");
         if (isNull(name)) {
             isValid = false;
-            messages.put("name", "must be not null");
+            messages.put("name", MESSAGE_NOT_NULL);
         }
         if (isNull(description)) {
             isValid = false;
-            messages.put("description", "must be not null");
+            messages.put("description", MESSAGE_NOT_NULL);
         }
         if (isNull(priceString)) {
             isValid = false;
-            messages.put("price", "must be not null");
+            messages.put("price", MESSAGE_NOT_NULL);
         } else {
             try {
                 BigDecimal price = BigDecimal.valueOf(Double.valueOf(priceString));
+                if (price.floatValue() <= 0) {
+                    isValid = false;
+                    messages.put("price", MESSAGE_PRICE);
+                }
             } catch (NumberFormatException e) {
                 isValid = false;
-                messages.put("price", "price must be number");
+                messages.put("price", MESSAGE_PRICE);
             }
         }
         request.setAttribute("messages", messages);
         return isValid;
     }
 
-    private boolean isNull(String text) {
-        if ("".equals(text) || (text == null)) {
-            return true;
-        }
-        return false;
-    }
+
 }

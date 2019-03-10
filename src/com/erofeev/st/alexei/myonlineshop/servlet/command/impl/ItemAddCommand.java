@@ -25,7 +25,7 @@ public class ItemAddCommand implements Command {
         }
         String name = request.getParameter("name");
         String description = request.getParameter("description");
-        BigDecimal price =  BigDecimal.valueOf(Double.parseDouble(request.getParameter("price")));
+        BigDecimal price = BigDecimal.valueOf(Double.parseDouble(request.getParameter("price")));
         ItemDTO itemDTO = new ItemDTO(name, description, price);
         try {
             itemService.save(itemDTO);

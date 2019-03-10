@@ -53,16 +53,14 @@ public class OrderRepositoryImpl implements OrderRepository {
                 return order;
             }
         } catch (SQLException e) {
-            String message = "Can't save order: " + e.getMessage();
-            System.out.println(message);
-            e.printStackTrace();
+            String message = "Can't save order: " + order + " " + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }
 
     @Override
-    public Order findById(Connection connection, Long id) {
-        Order order = null;
+    public Order findById(Connection connection, Long id) throws RepositoryException {
+        Order order;
         String query = "SELECT orders.id as id,status,created, users.id as user_id,email,users.name as firstname,users.surname as lastname," +
                 "        items.id as items_id, items.name as item_name,description,quantity, items.price as price,UNIQUE_number" +
                 "       FROM orders" +
@@ -72,13 +70,11 @@ public class OrderRepositoryImpl implements OrderRepository {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 order = getOrder(resultSet).get(0);
-
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            String message = "Can't find by id order: " + id + " " + e.getMessage();
+            throw new RepositoryException(message, e);
         }
-
         return order;
     }
 
@@ -93,10 +89,8 @@ public class OrderRepositoryImpl implements OrderRepository {
             return true;
         } catch (SQLException e) {
             String message = "Can't updateInfo order: " + order + " " + e.getMessage();
-            e.printStackTrace();
             throw new RepositoryException(message, e);
         }
-
     }
 
     @Override
@@ -122,8 +116,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findAll(Connection connection, int offset, int amount) {
-        List<Order> orders = new ArrayList<>();
+    public List<Order> findAll(Connection connection, int offset, int amount) throws RepositoryException {
+        List<Order> orders;
         String query = "SELECT orders.id as id,status,created, users.id as user_id,email,users.name as firstname,users.surname as lastname," +
                 "        items.id as items_id, items.name as item_name,description,quantity, items.price as price,UNIQUE_number" +
                 "       FROM orders" +
@@ -134,29 +128,28 @@ public class OrderRepositoryImpl implements OrderRepository {
             ps.setLong(2, amount);
             ResultSet resultSet = ps.executeQuery();
             orders = getOrder(resultSet);
+            return orders;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            String message = "Can't found orders: ";
+            throw new RepositoryException(message);
         }
-        return orders;
     }
 
     @Override
     public Integer getAmount(Connection connection) throws RepositoryException {
-        Integer amount = null;
+        Integer amount;
         String query = "SELECT COUNT(*) FROM orders";
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(query)) {
                 resultSet.next();
                 amount = resultSet.getInt(1);
+                return amount;
             }
         } catch (SQLException e) {
             String message = "Can't get amount of orders: " + e.getMessage();
             throw new RepositoryException(message, e);
         }
-        return amount;
     }
-
 
     private List<Order> getOrder(ResultSet resultSet) throws SQLException {
         List<Order> orders = new ArrayList<>();

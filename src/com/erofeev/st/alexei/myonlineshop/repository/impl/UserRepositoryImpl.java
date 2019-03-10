@@ -42,19 +42,20 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setString(3, name);
             ps.setString(4, password);
             ps.setLong(5, roleId);
-            int amountOfChange = ps.executeUpdate();
+            int amountOfChanges = ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (amountOfChange > 0) {
+                if (amountOfChanges > 0) {
                     while (rs.next()) {
                         user.setId(rs.getLong(1));
+
                     }
                 }
+                return user;
             }
         } catch (SQLException e) {
             String message = "Can't add item: " + user + " " + e.getMessage();
-            throw new RepositoryException(message);
+            throw new RepositoryException(message, e);
         }
-        return user;
     }
 
     @Override
@@ -67,9 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setString(1, firstName);
             ps.setString(2, lastName);
             ps.setLong(3, id);
-            Integer amount = ps.executeUpdate();
-            return amount;
-
+            return ps.executeUpdate();
         } catch (SQLException e) {
             String message = "Can't updateInfo user." + e.getMessage();
             throw new RepositoryException(message, e);
@@ -99,7 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             String message = "Can't find user by email: " + e.getMessage();
-            throw new RepositoryException(message);
+            throw new RepositoryException(message, e);
         }
     }
 
@@ -135,7 +134,20 @@ public class UserRepositoryImpl implements UserRepository {
             String message = "Can't updateInfo password" + e.getMessage();
             throw new RepositoryException(message, e);
         }
+    }
 
+    @Override
+    public Integer getAmount(Connection connection) throws RepositoryException {
+        String query = "SELECT COUNT(*) FROM users";
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(query)) {
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            String message = "Can't get amount of users: " + e.getMessage();
+            throw new RepositoryException(message, e);
+        }
     }
 
     private User getUser(ResultSet resultSet, boolean isLazy) throws SQLException {
@@ -163,7 +175,7 @@ public class UserRepositoryImpl implements UserRepository {
             Permission permission = new Permission(permissionId, permissionName);
             permissions.add(permission);
         }
-        if (user != null && role != null) {
+        if (user != null) {
             role.setPermissions(permissions);
             user.setRole(role);
             return user;
@@ -171,6 +183,4 @@ public class UserRepositoryImpl implements UserRepository {
             System.out.println("User not found");
         return null;
     }
-
-
 }

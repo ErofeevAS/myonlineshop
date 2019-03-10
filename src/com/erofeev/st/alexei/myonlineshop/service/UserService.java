@@ -4,8 +4,6 @@ import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 
-import java.util.List;
-
 public interface UserService {
     UserDTO findById(Long id, boolean isLazy) throws ServiceException;
 
@@ -16,6 +14,8 @@ public interface UserService {
     User findByEmail(String email, boolean isLazy) throws ServiceException;
 
     Boolean isValidPassword(User user, String password);
+
+    Integer getAmountOfUser() throws ServiceException;
 
 
 }

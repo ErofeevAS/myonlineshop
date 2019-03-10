@@ -65,14 +65,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void save(ItemDTO itemDTO) throws ServiceException {
-        Item returnedItem = null;
+        Item returnedItem;
         try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
             Item item = ItemConverter.fromItem(itemDTO);
             item.setUniqueNumber(UniqueNumberGenerator.generateUniqueNumber());
             returnedItem = itemRepository.save(connection, item);
+            connection.commit();
             if (returnedItem == null) {
                 throw new ServiceException("Item wasn't saved");
             }
+
         } catch (RepositoryException e) {
             throw new ServiceException(e);
         } catch (SQLException e) {
@@ -84,14 +87,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void delete(ItemDTO itemDTO) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
             Item item = ItemConverter.fromItem(itemDTO);
             try {
                 if (!itemRepository.delete(connection, item)) {
-                    throw new ServiceException("Item wasn't deleted");
+                    throw new ServiceException(item + "wasn't deleted");
                 }
             } catch (RepositoryException e) {
                 throw new ServiceException(e);
             }
+            connection.commit();
         } catch (SQLException e) {
             String message = "Can't open connection when try delete item: " + e.getMessage();
             throw new ServiceException(message, e);
@@ -101,6 +106,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void delete(String uniqueNumber) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
+            connection.setAutoCommit(false);
             try {
                 if (!itemRepository.delete(connection, uniqueNumber)) {
                     throw new ServiceException("Item wasn't deleted");
@@ -108,6 +114,7 @@ public class ItemServiceImpl implements ItemService {
             } catch (RepositoryException e) {
                 throw new ServiceException(e);
             }
+            connection.commit();
         } catch (SQLException e) {
             String message = "Can't open connection when try delete item: " + e.getMessage();
             throw new ServiceException(message, e);
@@ -116,13 +123,19 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public ItemDTO findById(Long id) throws ServiceException, RepositoryException {
+    public ItemDTO findById(Long id) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
-            Item foundItem = itemRepository.findById(connection, id);
-            if (foundItem == null) {
-                throw new ServiceException("item not found");
+            try {
+                connection.setAutoCommit(false);
+                Item foundItem = itemRepository.findById(connection, id);
+                connection.commit();
+                if (foundItem == null) {
+                    throw new ServiceException("item not found");
+                }
+                return ItemConverter.toDTO(foundItem);
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
             }
-            return ItemConverter.toDTO(foundItem);
         } catch (SQLException e) {
             String message = "Can't open connection when trying find item by id: " + e.getMessage();
             throw new ServiceException(message, e);
@@ -130,13 +143,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDTO findByUniqueNumber(String uniqueNumber) throws RepositoryException, ServiceException {
+    public ItemDTO findByUniqueNumber(String uniqueNumber) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
-            Item foundItem = itemRepository.findByUniqueNumber(connection, uniqueNumber);
-            if (foundItem == null) {
-                throw new ServiceException("item not found");
+            try {
+                connection.setAutoCommit(false);
+                Item foundItem = itemRepository.findByUniqueNumber(connection, uniqueNumber);
+                connection.commit();
+                if (foundItem == null) {
+                    throw new ServiceException("item not found");
+                }
+                return ItemConverter.toDTO(foundItem);
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
             }
-            return ItemConverter.toDTO(foundItem);
         } catch (SQLException e) {
             String message = "Can't open connection when trying find item by id: " + e.getMessage();
             throw new ServiceException(message, e);
@@ -151,18 +170,13 @@ public class ItemServiceImpl implements ItemService {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                try {
-                    itemRepository.saveList(connection, items);
-                } catch (RepositoryException e) {
-                    throw new ServiceException(e);
-                }
+                itemRepository.saveList(connection, items);
                 connection.commit();
-                System.out.println("Items was saved");
                 return true;
-            } catch (SQLException e) {
+            } catch (SQLException | RepositoryException e) {
                 connection.rollback();
-                System.out.println("Transaction was rollbacked");
-                throw new ServiceException(e);
+                String message = "Transaction was rollbacked";
+                throw new ServiceException(message, e);
             }
         } catch (SQLException e) {
             String message = "Can't establish a connection: " + e.getMessage();
@@ -170,46 +184,34 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Override
-    public Boolean importFromXml(InputStream inputStream, File xsd) throws ServiceException {
-        XMLService xmlService = XMLServiceImpl.getInstance();
-        List<ItemXML> itemXMLS = xmlService.importItemsFromFile(inputStream, xsd);
-        List<Item> items = ItemConverter.convertItemsXMLtoItems(itemXMLS);
+    public void importItems(List<Item> items) throws ServiceException {
         try (Connection connection = connectionService.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                try {
-                    itemRepository.saveList(connection, items);
-                } catch (RepositoryException e) {
-                    throw new ServiceException(e);
-                }
+                itemRepository.saveList(connection, items);
                 connection.commit();
-                System.out.println("Items was saved");
-                return true;
-            } catch (SQLException e) {
+            } catch (SQLException | RepositoryException e) {
                 connection.rollback();
-                System.out.println("Transaction was rollbacked");
-                throw new ServiceException(e);
+                String message = "Transaction was rollbacked";
+                throw new ServiceException(message, e);
             }
-        } catch (SQLException e) {
+        } catch (
+                SQLException e) {
             String message = "Can't establish a connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
+
     }
 
     @Override
     public Integer getAmountOfItems() throws ServiceException {
-        Integer amount = null;
+        Integer amount;
         try (Connection connection = connectionService.getConnection()) {
             connection.setAutoCommit(false);
-            try {
-                amount = itemRepository.getAmount(connection);
-            } catch (RepositoryException e) {
-                throw new ServiceException(e);
-            }
+            amount = itemRepository.getAmount(connection);
             connection.commit();
-        } catch (SQLException e) {
-            throw new ServiceException(e);
+        } catch (SQLException | RepositoryException e) {
+            throw new ServiceException(e.getMessage(), e);
         }
         return amount;
     }

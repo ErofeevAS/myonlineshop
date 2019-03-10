@@ -1,9 +1,9 @@
 package com.erofeev.st.alexei.myonlineshop.xml.impl;
 
+import com.erofeev.st.alexei.myonlineshop.service.util.XMLValidatorUtil;
+import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
 import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 import com.erofeev.st.alexei.myonlineshop.xml.model.ItemsXML;
-import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
-import com.erofeev.st.alexei.myonlineshop.service.util.XMLValidatorUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,7 +31,6 @@ public class XMLServiceImpl implements XMLService {
 
     @Override
     public List<ItemXML> importItemsFromFile(File xml, File xsd) {
-
         if (XMLValidatorUtil.validateAgainstXSD(xml, xsd)) {
             System.out.println("XML file  valid!");
             JAXBContext jaxbContext;
@@ -55,8 +54,6 @@ public class XMLServiceImpl implements XMLService {
 
     @Override
     public List<ItemXML> importItemsFromFile(InputStream inputStream, File xsd) {
-        if (XMLValidatorUtil.validateAgainstXSD(inputStream, xsd)) {
-            System.out.println("XML file  valid!");
             JAXBContext jaxbContext;
             try {
                 jaxbContext = JAXBContext.newInstance(ItemsXML.class);
@@ -64,15 +61,17 @@ public class XMLServiceImpl implements XMLService {
                 ItemsXML itemsXML = (ItemsXML) jaxbUnmarshaller.unmarshal(inputStream);
                 List<ItemXML> items = itemsXML.getItem();
                 return items;
-
             } catch (JAXBException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("XML file not valid!");
-        }
         return null;
+    }
+
+    @Override
+    public Boolean isValidXML(InputStream inputStream, File xsd) {
+        return (XMLValidatorUtil.validateAgainstXSD(inputStream, xsd));
+
     }
 
 }

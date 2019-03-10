@@ -18,8 +18,6 @@ import com.erofeev.st.alexei.myonlineshop.service.SecureService;
 import com.erofeev.st.alexei.myonlineshop.service.converter.ProfileConverter;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
 import java.sql.Connection;
@@ -47,40 +45,40 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
         return instance;
     }
 
-    @Override
-    public UserDTO loginUser(UserLoginDTO userLoginDTO) throws ServiceException {
-        User user = null;
-        UserDTO userDTO = null;
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                String email = userLoginDTO.getEmail();
-                String passwordFromWeb = userLoginDTO.getPassword();
-                try {
-                    user = userRepository.findByEmail(connection, email, false);
-                } catch (RepositoryException e) {
-                    throw new ServiceException(e);
-                }
-
-                userDTO = UserConverter.toDTO(user);
-                String passwordFromDataBase = user.getPassword();
-                passwordFromWeb = secureService.hashPassword(passwordFromWeb);
-                if (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase)) {
-                    return userDTO;
-                } else {
-                    userDTO = null;
-                }
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-                String message = "transaction was rollback";
-                throw new ServiceException(message, e);
-            }
-        } catch (SQLException e) {
-            throw new ServiceException(e);
-        }
-        return userDTO;
-    }
+//
+//    public UserDTO loginUser(UserLoginDTO userLoginDTO) throws ServiceException {
+//        User user = null;
+//        UserDTO userDTO = null;
+//        try (Connection connection = connectionService.getConnection()) {
+//            try {
+//                connection.setAutoCommit(false);
+//                String email = userLoginDTO.getEmail();
+//                String passwordFromWeb = userLoginDTO.getPassword();
+//                try {
+//                    user = userRepository.findByEmail(connection, email, false);
+//                } catch (RepositoryException e) {
+//                    throw new ServiceException(e);
+//                }
+//
+//                userDTO = UserConverter.toDTO(user);
+//                String passwordFromDataBase = user.getPassword();
+//                passwordFromWeb = secureService.hashPassword(passwordFromWeb);
+//                if (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase)) {
+//                    return userDTO;
+//                } else {
+//                    userDTO = null;
+//                }
+//                connection.commit();
+//            } catch (SQLException e) {
+//                connection.rollback();
+//                String message = "transaction was rollback";
+//                throw new ServiceException(message, e);
+//            }
+//        } catch (SQLException e) {
+//            throw new ServiceException(e);
+//        }
+//        return userDTO;
+//    }
 
     @Override
     public void registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO, Role role) throws RepositoryException, ServiceException {

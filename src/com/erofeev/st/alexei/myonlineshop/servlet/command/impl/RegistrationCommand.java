@@ -3,27 +3,22 @@ package com.erofeev.st.alexei.myonlineshop.servlet.command.impl;
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
-import com.erofeev.st.alexei.myonlineshop.repository.model.Permission;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.service.ItemService;
 import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
-import com.erofeev.st.alexei.myonlineshop.service.impl.ItemServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.service.impl.LoginRegistrationServiceImpl;
-import com.erofeev.st.alexei.myonlineshop.service.model.ItemDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
-import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.RegistrationValidatorImpl;
+import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.RegistrationValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 public class RegistrationCommand implements Command {
     private LoginRegistrationService loginRegistrationService = LoginRegistrationServiceImpl.getInstance();
-    private Validator validator = RegistrationValidatorImpl.getInstance();
+    private Validator validator = RegistrationValidator.getInstance();
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -35,7 +30,6 @@ public class RegistrationCommand implements Command {
         ProfileDTO profileDTO = createProfileDTO(request);
 
         try {
-            User regUser = null;
             try {
                 Role role = new Role("CUSTOMER");
                 role.setId(2L);

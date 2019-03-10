@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class RegistrationPageCommand implements Command {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         return ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
     }
 }

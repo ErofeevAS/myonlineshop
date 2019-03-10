@@ -10,18 +10,24 @@ import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserSessionDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
+import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
+import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.ProfileValidator;
+import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.RegistrationValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class ProfileMenuChangeCommand implements Command {
     private ProfileService profileService = ProfileServiceImpl.getInstance();
     private UserService userService = UserServiceImpl.getInstance();
+    private Validator validator = ProfileValidator.getInstance();
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String execute(HttpServletRequest request, HttpServletResponse response) {
         String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.PROFILE_MENU);
+        if (!validator.isRequestValid(request)) {
+            return page;
+        }
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String address = request.getParameter("address");
@@ -50,7 +56,6 @@ public class ProfileMenuChangeCommand implements Command {
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-
         return page;
     }
 }

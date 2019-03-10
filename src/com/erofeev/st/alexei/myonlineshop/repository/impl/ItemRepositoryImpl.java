@@ -3,7 +3,6 @@ package com.erofeev.st.alexei.myonlineshop.repository.impl;
 import com.erofeev.st.alexei.myonlineshop.repository.ItemRepository;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
-import com.erofeev.st.alexei.myonlineshop.repository.model.enums.StatusEnum;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -144,7 +143,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            String message = "Can't delete item: "  + e.getMessage();
+            String message = "Can't delete item: " + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }
@@ -187,8 +186,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Integer getAmount(Connection connection) throws RepositoryException {
-        Integer amount = null;
-        String query = "SELECT COUNT(*) FROM items";
+        Integer amount;
+        String query = "SELECT COUNT(*) FROM items WHERE deleted = false";
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(query)) {
                 resultSet.next();
@@ -207,7 +206,6 @@ public class ItemRepositoryImpl implements ItemRepository {
         String description = resultSet.getString("description");
         String uniqueNumber = resultSet.getString("unique_number");
         BigDecimal price = resultSet.getBigDecimal("price");
-        Item item = new Item(id, name, description, uniqueNumber, price);
-        return item;
+        return new Item(id, name, description, uniqueNumber, price);
     }
 }
