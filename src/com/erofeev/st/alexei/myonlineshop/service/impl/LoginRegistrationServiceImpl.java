@@ -36,7 +36,7 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
 
     public static LoginRegistrationService getInstance() {
         if (instance == null) {
-            synchronized (LoginRegistrationService.class) {
+            synchronized (LoginRegistrationServiceImpl.class) {
                 if (instance == null) {
                     instance = new LoginRegistrationServiceImpl();
                 }
@@ -44,41 +44,6 @@ public class LoginRegistrationServiceImpl implements LoginRegistrationService {
         }
         return instance;
     }
-
-//
-//    public UserDTO loginUser(UserLoginDTO userLoginDTO) throws ServiceException {
-//        User user = null;
-//        UserDTO userDTO = null;
-//        try (Connection connection = connectionService.getConnection()) {
-//            try {
-//                connection.setAutoCommit(false);
-//                String email = userLoginDTO.getEmail();
-//                String passwordFromWeb = userLoginDTO.getPassword();
-//                try {
-//                    user = userRepository.findByEmail(connection, email, false);
-//                } catch (RepositoryException e) {
-//                    throw new ServiceException(e);
-//                }
-//
-//                userDTO = UserConverter.toDTO(user);
-//                String passwordFromDataBase = user.getPassword();
-//                passwordFromWeb = secureService.hashPassword(passwordFromWeb);
-//                if (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase)) {
-//                    return userDTO;
-//                } else {
-//                    userDTO = null;
-//                }
-//                connection.commit();
-//            } catch (SQLException e) {
-//                connection.rollback();
-//                String message = "transaction was rollback";
-//                throw new ServiceException(message, e);
-//            }
-//        } catch (SQLException e) {
-//            throw new ServiceException(e);
-//        }
-//        return userDTO;
-//    }
 
     @Override
     public void registrationUser(UserRegistrationDTO userRegistrationDTO, ProfileDTO profileDTO, Role role) throws RepositoryException, ServiceException {

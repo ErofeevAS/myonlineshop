@@ -19,7 +19,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     public static RoleRepository getInstance() {
         if (instance == null) {
-            synchronized (RoleRepository.class) {
+            synchronized (RoleRepositoryImpl.class) {
                 if (instance == null) {
                     instance = new RoleRepositoryImpl();
                 }
@@ -56,7 +56,7 @@ public class RoleRepositoryImpl implements RoleRepository {
                 return getRole(rs);
             }
         } catch (SQLException e) {
-            String message = "Can't find role by id:" + name + " " + e.getMessage();
+            String message = "Can't find role by name:" + name + " " + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }

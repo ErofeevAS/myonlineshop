@@ -20,7 +20,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     public static OrderRepository getInstance() {
         if (instance == null) {
-            synchronized (OrderRepository.class) {
+            synchronized (OrderRepositoryImpl.class) {
                 if (instance == null) {
                     instance = new OrderRepositoryImpl();
                 }

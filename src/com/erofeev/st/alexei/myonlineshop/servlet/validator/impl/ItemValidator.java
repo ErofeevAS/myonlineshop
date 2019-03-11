@@ -25,8 +25,8 @@ public class ItemValidator extends Validator {
     }
 
     public Boolean isRequestValid(HttpServletRequest request) {
-        boolean isValid = true;
-        Map<String, String> messages = new HashMap<>();
+        messages = new HashMap<>();
+        isValid = true;
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String priceString = request.getParameter("price");

@@ -1,6 +1,8 @@
 package com.erofeev.st.alexei.myonlineshop.servlet.validator;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,9 @@ public abstract class Validator {
     protected final String MESSAGE_EMAIL_FORMAT = "wrong format for email";
     protected final String MESSAGE_PRICE = "must be number more than 0";
     protected final String MESSAGE_QUANTITY = "must be more than zero";
+
+    protected Boolean isValid = true;
+    protected Map<String, String> messages = new HashMap<>();
 
     private final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -35,7 +40,27 @@ public abstract class Validator {
     }
 
     protected boolean isPasswordsEqual(String password, String repassword) {
-        return password.equals(repassword);
+        return password.trim().equals(repassword.trim());
+    }
+
+    protected Boolean isPasswordValid(String password, String rePassword) {
+        isValid = true;
+        if (isNull(password)) {
+            isValid = false;
+            messages.put("password", MESSAGE_NOT_NULL);
+        }
+        if (isNull(rePassword)) {
+            isValid = false;
+            messages.put("repassword", MESSAGE_NOT_NULL);
+        }
+        if (!(isNull(password) && isNull(rePassword))) {
+            if (!isPasswordsEqual(password, rePassword)) {
+                isValid = false;
+                messages.put("password", MESSAGE_DIFFERENT_PASSWORD);
+                messages.put("repassword", MESSAGE_DIFFERENT_PASSWORD);
+            }
+        }
+        return isValid;
     }
 
 

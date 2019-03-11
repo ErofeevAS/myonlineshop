@@ -24,7 +24,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     public static ProfileService getInstance() {
         if (instance == null) {
-            synchronized (ProfileService.class) {
+            synchronized (ProfileServiceImpl.class) {
                 if (instance == null) {
                     instance = new ProfileServiceImpl();
                 }
@@ -41,12 +41,12 @@ public class ProfileServiceImpl implements ProfileService {
                 Profile profile = ProfileConverter.fromDTO(profileDTO);
                 profileRepository.save(connection, profile);
                 connection.commit();
-            } catch (RepositoryException | SQLException e) {
+            } catch (RepositoryException e) {
                 connection.rollback();
                 throw new ServiceException(e);
             }
         } catch (SQLException e) {
-            String message = "profile service save exception: " + e.getMessage();
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
     }
@@ -55,24 +55,29 @@ public class ProfileServiceImpl implements ProfileService {
     public Integer update(ProfileDTO profileDTO) throws ServiceException {
         Profile profile = ProfileConverter.fromDTO(profileDTO);
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            Integer amountUpdatedProfiles = profileRepository.update(connection, profile);
-            switch (amountUpdatedProfiles) {
-                case 0:
-                    connection.rollback();
-                    throw new ServiceException("profile with id: " + profileDTO.getId() + " not found ");
-                case 1:
-                    System.out.println("profile was updated");
-                    connection.commit();
-                    break;
-                default:
-                    connection.rollback();
-                    String message = "Can't updateInfo profile " + profileDTO;
-                    throw new ServiceException(message);
+            try {
+                connection.setAutoCommit(false);
+                Integer amountUpdatedProfiles = profileRepository.update(connection, profile);
+                switch (amountUpdatedProfiles) {
+                    case 0:
+                        connection.rollback();
+                        throw new ServiceException("profile with id: " + profileDTO.getId() + " not found ");
+                    case 1:
+                        System.out.println("profile was updated");
+                        connection.commit();
+                        break;
+                    default:
+                        connection.rollback();
+                        String message = "Can't update profile Info:  " + profileDTO;
+                        throw new ServiceException(message);
+                }
+                return amountUpdatedProfiles;
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
             }
-            return amountUpdatedProfiles;
-        } catch (RepositoryException | SQLException e) {
-            String message = "profile service updateInfo exception: " + e.getMessage();
+        } catch (SQLException e) {
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
     }
@@ -89,12 +94,12 @@ public class ProfileServiceImpl implements ProfileService {
                 ProfileDTO profileDTO = ProfileConverter.toDTO(profile);
                 connection.commit();
                 return profileDTO;
-            } catch (RepositoryException | SQLException e) {
+            } catch (RepositoryException e) {
                 connection.rollback();
                 throw new ServiceException(e);
             }
         } catch (SQLException e) {
-            String message = "profile service updateInfo exception: " + e.getMessage();
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
     }

@@ -15,9 +15,9 @@ public interface OrderService {
 
     List<OrderDTO> getUserOrders(UserDTO userDTO, int pageNumber, int amount) throws ServiceException;
 
-    List<OrderDTO> showAllOrders(int pageNumber, int amount) throws ServiceException;
+    List<OrderDTO> getAllOrders(int pageNumber, int amount) throws ServiceException;
 
-    void changeStatus(OrderDTO orderDTO, StatusEnum status) throws RepositoryException, ServiceException;
+    void changeStatus(OrderDTO orderDTO, StatusEnum status) throws ServiceException;
 
     OrderDTO findById(Long id) throws ServiceException;
 

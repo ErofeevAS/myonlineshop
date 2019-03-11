@@ -1,12 +1,17 @@
 package com.erofeev.st.alexei.myonlineshop.servlet.command.impl;
 
 import com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl;
-import com.erofeev.st.alexei.myonlineshop.repository.exception.RepositoryException;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
-import com.erofeev.st.alexei.myonlineshop.service.LoginRegistrationService;
-import com.erofeev.st.alexei.myonlineshop.service.impl.LoginRegistrationServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.service.ProfileService;
+import com.erofeev.st.alexei.myonlineshop.service.RoleService;
+import com.erofeev.st.alexei.myonlineshop.service.SecureService;
+import com.erofeev.st.alexei.myonlineshop.service.UserService;
+import com.erofeev.st.alexei.myonlineshop.service.impl.ProfileServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.service.impl.RoleServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.service.impl.SecureServiceImpl;
+import com.erofeev.st.alexei.myonlineshop.service.impl.UserServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.service.model.ProfileDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
@@ -17,8 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RegistrationCommand implements Command {
-    private LoginRegistrationService loginRegistrationService = LoginRegistrationServiceImpl.getInstance();
+    private RoleService roleService = RoleServiceImpl.getInstance();
+    private ProfileService profileService = ProfileServiceImpl.getInstance();
+    private UserService userService = UserServiceImpl.getInstance();
     private Validator validator = RegistrationValidator.getInstance();
+    private SecureService secureService = SecureServiceImpl.getInstance();
+    private final String DEFAULT_ROLE_NAME = "CUSTOMER";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response) {
@@ -28,26 +37,32 @@ public class RegistrationCommand implements Command {
         }
         UserRegistrationDTO userDTO = createUserRegistrationDTO(request);
         ProfileDTO profileDTO = createProfileDTO(request);
-
         try {
-            try {
-                Role role = new Role("CUSTOMER");
-                role.setId(2L);
-                loginRegistrationService.registrationUser(userDTO, profileDTO, role);
+            String email = userDTO.getEmail();
+            User user = userService.findByEmail(email, false);
+            if (user == null) {
+                Role role = roleService.findRoleNyName(DEFAULT_ROLE_NAME);
+                userDTO.setRole(role);
+                String password = userDTO.getPassword();
+                userDTO.setPassword(secureService.hashPassword(password));
+                user = userService.save(userDTO);
+                profileDTO.setId(user.getId());
+                profileService.save(profileDTO);
                 request.setAttribute("info", "user was registered");
-
                 page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
-            } catch (ServiceException e) {
-                request.setAttribute("error", e.getMessage());
-                e.printStackTrace();
-                page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
+            } else {
+                request.setAttribute("error", "email is reserved");
+                return page;
             }
 
-        } catch (RepositoryException e) {
+        } catch (ServiceException e) {
+            request.setAttribute("error", e.getMessage());
             e.printStackTrace();
+            page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.REGISTRATION_PAGE);
         }
         return page;
     }
+
 
     private UserRegistrationDTO createUserRegistrationDTO(HttpServletRequest request) {
         String email = request.getParameter("email");

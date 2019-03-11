@@ -15,7 +15,7 @@ public class DataBaseCreatorRepositoryImpl implements DataBaseCreatorRepository 
 
     public static DataBaseCreatorRepository getInstance() {
         if (instance == null) {
-            synchronized (DataBaseCreatorRepository.class) {
+            synchronized (DataBaseCreatorRepositoryImpl.class) {
                 if (instance == null) {
                     instance = new DataBaseCreatorRepositoryImpl();
                 }

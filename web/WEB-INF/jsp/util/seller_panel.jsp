@@ -30,14 +30,21 @@
     </div>
 </form>
 
-<form action=${pageContext.request.contextPath}/shop/import method="post" enctype="multipart/form-data">
-    <div class="btn btn-lg btn-primary btn-block text-uppercase">
-        <label class="btn btn-lg btn-primary btn-block text-uppercase">
-            Import <input name="file" type="file" style="display: none">
-            <input type="submit" name="s">
-        </label>
+<form action=${pageContext.request.contextPath}/shop?command=import_page method="post">
+    <div class="form-label-group">
+        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Import</button>
     </div>
 </form>
+
+<%--<form action=${pageContext.request.contextPath}/shop/import method="post" enctype="multipart/form-data">--%>
+    <%--<div class="btn btn-lg btn-primary btn-block text-uppercase">--%>
+        <%--<label class="btn btn-xs btn-primary btn-block text-uppercase">--%>
+            <%--file... <input name="file" type="file" style="display: none">--%>
+            <%--&lt;%&ndash;<input type="submit" class="btn btn-xs btn-primary btn-block text-uppercase">import<input>&ndash;%&gt;--%>
+            <%--<button class="btn btn-xs btn-primary btn-block text-uppercase" type="submit">import</button>--%>
+        <%--</label>--%>
+    <%--</div>--%>
+<%--</form>--%>
 
 
 </body>

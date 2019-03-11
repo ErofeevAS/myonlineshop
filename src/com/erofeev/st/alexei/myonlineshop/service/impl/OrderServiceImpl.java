@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
 
     public static OrderService getInstance() {
         if (instance == null) {
-            synchronized (OrderService.class) {
+            synchronized (OrderServiceImpl.class) {
                 if (instance == null) {
                     instance = new OrderServiceImpl();
                 }
@@ -56,20 +56,23 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setStatus(StatusEnum.NEW);
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            createdOrder = orderRepository.save(connection, order);
-            if (createdOrder == null) {
-                throw new ServiceException("order wasn't created");
+            try {
+                connection.setAutoCommit(false);
+                createdOrder = orderRepository.save(connection, order);
+                if (createdOrder == null) {
+                    connection.rollback();
+                    throw new ServiceException("order wasn't created");
+                }
+                connection.commit();
+                return OrderConverter.toDTO(createdOrder);
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
             }
-            connection.commit();
-        } catch (RepositoryException e) {
-            throw new ServiceException(e);
         } catch (SQLException e) {
-            String message = "order service create exception: " + e.getMessage();
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
-
         }
-        return OrderConverter.toDTO(createdOrder);
     }
 
     @Override
@@ -77,47 +80,58 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDTO> orderDTOList;
         int offset = (pageNumber - 1) * amount;
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            User user = UserConverter.fromDTO(userDTO);
-            List<Order> orders = orderRepository.findUserOrders(connection, user, offset, amount);
-            orderDTOList = OrderConverter.convertList(orders);
-            connection.commit();
-        } catch (RepositoryException e) {
-            throw new ServiceException(e);
+            try {
+                connection.setAutoCommit(false);
+                User user = UserConverter.fromDTO(userDTO);
+                List<Order> orders = orderRepository.findUserOrders(connection, user, offset, amount);
+                orderDTOList = OrderConverter.convertList(orders);
+                connection.commit();
+                return orderDTOList;
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
+            }
         } catch (SQLException e) {
-            String message = " " + e.getMessage();
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
-        return orderDTOList;
     }
 
     @Override
-    public List<OrderDTO> showAllOrders(int pageNumber, int amount) throws ServiceException {
+    public List<OrderDTO> getAllOrders(int pageNumber, int amount) throws ServiceException {
         int offset = (pageNumber - 1) * amount;
         List<OrderDTO> orderDTOList;
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            List<Order> orders = orderRepository.findAll(connection, offset, amount);
-            orderDTOList = OrderConverter.convertList(orders);
-            connection.commit();
-            return orderDTOList;
-        } catch (SQLException | RepositoryException e) {
-            throw new ServiceException(e);
+            try {
+                connection.setAutoCommit(false);
+                List<Order> orders = orderRepository.findAll(connection, offset, amount);
+                orderDTOList = OrderConverter.convertList(orders);
+                connection.commit();
+                return orderDTOList;
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
-
     }
 
-
     @Override
-    public void changeStatus(OrderDTO orderDTO, StatusEnum status) throws RepositoryException, ServiceException {
+    public void changeStatus(OrderDTO orderDTO, StatusEnum status) throws ServiceException {
         Order order = OrderConverter.fromDTO(orderDTO);
         order.setStatus(status);
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            orderRepository.update(connection, order, status);
-            connection.commit();
+            try {
+                connection.setAutoCommit(false);
+                orderRepository.update(connection, order, status);
+                connection.commit();
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
+            }
         } catch (SQLException e) {
-            String message = "Can't establish connection to database";
+            String message = "Can't open connection: " + e.getMessage();
             throw new ServiceException(message, e);
         }
     }
@@ -126,16 +140,21 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO findById(Long id) throws ServiceException {
         OrderDTO orderDTO;
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            Order order = orderRepository.findById(connection, id);
-            if (order == null) {
-                throw new ServiceException("Order not found");
+            try {
+                connection.setAutoCommit(false);
+                Order order = orderRepository.findById(connection, id);
+                if (order == null) {
+                    throw new ServiceException("Order not found");
+                }
+                orderDTO = OrderConverter.toDTO(order);
+                connection.commit();
+                return orderDTO;
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
             }
-            orderDTO = OrderConverter.toDTO(order);
-            connection.commit();
-            return orderDTO;
-        } catch (SQLException | RepositoryException e) {
-            throw new ServiceException(e);
+        } catch (SQLException e) {
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
     }
 
@@ -146,14 +165,15 @@ public class OrderServiceImpl implements OrderService {
             connection.setAutoCommit(false);
             try {
                 amount = orderRepository.getAmount(connection);
+                connection.commit();
+                return amount;
             } catch (RepositoryException e) {
                 throw new ServiceException(e);
             }
-            connection.commit();
         } catch (SQLException e) {
-            throw new ServiceException(e);
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
-        return amount;
     }
 }
 

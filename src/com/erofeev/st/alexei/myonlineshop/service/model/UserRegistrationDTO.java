@@ -7,12 +7,21 @@ public class UserRegistrationDTO {
     private String password;
     private String firstName;
     private String lastName;
+    private Role role;
 
     public UserRegistrationDTO(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getEmail() {
@@ -54,6 +63,8 @@ public class UserRegistrationDTO {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", role=" + role +
                 '}';
     }
+
 }

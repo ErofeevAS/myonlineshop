@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/login.css">
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
-    <title>Login</title>
+    <title>ITEMS</title>
 
 </head>
 

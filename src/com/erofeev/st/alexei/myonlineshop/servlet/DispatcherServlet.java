@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DispatcherServlet extends HttpServlet {
+    private Boolean isDataBaseLoaded = false;
     private Map<CommandEnum, Command> commands = new HashMap<>();
     private UserService userService = UserServiceImpl.getInstance();
     public final static String BASE_URL = "/myonlineshop/shop?command=";
@@ -41,8 +42,11 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.MY_ORDERS, new MyOrdersCommand());
         commands.put(CommandEnum.ORDERS, new OrdersCommand());
         commands.put(CommandEnum.CHANGE_PASSWORD, new ChangePasswordCommand());
+        commands.put(CommandEnum.CHANGE_PASSWORD_PAGE, new ChangePasswordPageCommand());
         commands.put(CommandEnum.PROFILE_MENU, new ProfileMenuCommand());
         commands.put(CommandEnum.PROFILE_MENU_CHANGE, new ProfileMenuChangeCommand());
+        commands.put(CommandEnum.IMPORT_PAGE, new ImportPageCommand());
+
         initDataBase();
     }
 
@@ -79,24 +83,23 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void initDataBase() {
-        try {
-            if (userService.getAmountOfUser() == 0) {
-                ServletContext context = getServletContext();
-                String fullPath1 = context.getRealPath("/WEB-INF/sql/myshop.sql");
-                String fullPath2 = context.getRealPath("/WEB-INF/sql/populate_table.sql");
-                File fileCreator = new File(fullPath1);
-                File filePopulator = new File(fullPath2);
+        if (!isDataBaseLoaded) {
+            try {
                 DataBaseCreatorService dataBaseCreatorService = DataBaseCreatorServiceImpl.getInstance();
-                try {
-                    dataBaseCreatorService.createDataBaseFromFile(fileCreator);
+                ServletContext context = getServletContext();
+                String fullPathTable = context.getRealPath("/WEB-INF/sql/myshop.sql");
+                File fileCreator = new File(fullPathTable);
+                dataBaseCreatorService.createDataBaseFromFile(fileCreator);
+                if (userService.getAmountOfUser() == 0) {
+                    String fullPathData = context.getRealPath("/WEB-INF/sql/populate_table.sql");
+                    File filePopulator = new File(fullPathData);
                     dataBaseCreatorService.createDataBaseFromFile(filePopulator);
-                } catch (ServiceException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
+
                 }
+                isDataBaseLoaded = true;
+            } catch (ServiceException e) {
+                e.printStackTrace();
             }
-        } catch (ServiceException e) {
-            e.printStackTrace();
         }
     }
 }

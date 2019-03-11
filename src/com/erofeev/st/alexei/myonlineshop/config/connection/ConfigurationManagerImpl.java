@@ -25,6 +25,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public static final String ITEMS_DELETE_PAGE = "pages.itemsdelete";
     public static final String CHANGE_PASSWORD_PAGE = "pages.changepassword";
     public static final String PROFILE_MENU = "pages.profile_menu";
+    public static final String IMPORT_PAGE = "pages.import_menu";
 
 
     private ConfigurationManagerImpl() {

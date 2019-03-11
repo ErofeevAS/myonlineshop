@@ -4,44 +4,37 @@ import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Map;
 
-public class LoginValidator extends Validator {
+public class PasswordValidator extends Validator {
     private static volatile Validator instance = null;
 
-    private LoginValidator() {
+    private PasswordValidator() {
     }
 
     public static Validator getInstance() {
         if (instance == null) {
-            synchronized (LoginValidator.class) {
+            synchronized (PasswordValidator.class) {
                 if (instance == null) {
-                    instance = new LoginValidator();
+                    instance = new PasswordValidator();
                 }
             }
         }
         return instance;
     }
 
+    @Override
     public Boolean isRequestValid(HttpServletRequest request) {
         messages = new HashMap<>();
         isValid = true;
-        String email = request.getParameter("email");
+        String oldPassword = request.getParameter("oldpassword");
         String password = request.getParameter("password");
-        if (isNull(email)) {
-            messages.put("email", MESSAGE_NOT_NULL);
-            isValid = false;
+        String rePassword = request.getParameter("repassword");
 
-        } else {
-            if (!isEmailValid(email)) {
-                messages.put("email", MESSAGE_EMAIL_FORMAT);
-                isValid = false;
-            }
-        }
-        if (isNull(password)) {
-            messages.put("password", MESSAGE_NOT_NULL);
+        if (isNull(oldPassword)) {
             isValid = false;
+            messages.put("oldpassword", MESSAGE_NOT_NULL);
         }
+        isValid = isPasswordValid(password, rePassword);
         request.setAttribute("messages", messages);
         return isValid;
     }

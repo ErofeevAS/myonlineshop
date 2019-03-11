@@ -6,7 +6,6 @@ import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ProfileValidator extends Validator {
     private static volatile Validator instance;
@@ -28,9 +27,8 @@ public class ProfileValidator extends Validator {
 
     @Override
     public Boolean isRequestValid(HttpServletRequest request) {
-        boolean isValid = true;
-        Map<String, String> messages = new HashMap<>();
-
+        messages = new HashMap<>();
+        isValid = true;
         ProfileDTO profileDTO = (ProfileDTO) request.getAttribute("profile");
         if (profileDTO != null) {
             String address = profileDTO.getAddress();

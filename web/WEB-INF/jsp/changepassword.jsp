@@ -30,18 +30,32 @@
                     </c:if>
                     <form action="${pageContext.request.contextPath}/shop?command=change_password" method="post"
                           class="form-signin">
+                        <c:if test="${not empty messages.oldpassword}">
+                            <div class="alert alert-warning" role="alert">
+                                <c:out value="${messages.oldpassword}"></c:out>
+                            </div>
+                        </c:if>
                         <div class="form-label-group">
                             <input type="password" id="inpuOldPassword" class="form-control" name="oldpassword"
                                    placeholder="old password"
                                    required autofocus>
                             <label for="inpuOldPassword">old password</label>
                         </div>
-
+                        <c:if test="${not empty messages.password}">
+                            <div class="alert alert-warning" role="alert">
+                                <c:out value="${messages.password}"></c:out>
+                            </div>
+                        </c:if>
                         <div class="form-label-group">
-                            <input type="password" id="inputNewPassword" class="form-control" name="newpassword"
+                            <input type="password" id="inputNewPassword" class="form-control" name="password"
                                    placeholder="new password" required>
                             <label for="inputNewPassword">New password</label>
                         </div>
+                        <c:if test="${not empty messages.repassword}">
+                            <div class="alert alert-warning" role="alert">
+                                <c:out value="${messages.repassword}"></c:out>
+                            </div>
+                        </c:if>
                         <div class="form-label-group">
                             <input type="password" id="inputReNewPassword" class="form-control" name="repassword"
                                    placeholder="repassword"
@@ -52,9 +66,12 @@
                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">change</button>
                         <hr class="my-4">
 
-                        <div id="register-link" class="text-right">
+                        <c:if test="${user.permission.name == 'CUSTOMER' }">
                             <a href="${pageContext.request.contextPath}/shop?command=items" class="text-info">back</a>
-                        </div>
+                        </c:if>
+                        <c:if test="${user.permission.name == 'SELLER' }">
+                            <a href="${pageContext.request.contextPath}/shop?command=items_delete" class="text-info">back</a>
+                        </c:if>
                     </form>
                 </div>
             </div>

@@ -3,7 +3,6 @@ package com.erofeev.st.alexei.myonlineshop.service.converter;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Role;
 import com.erofeev.st.alexei.myonlineshop.repository.model.User;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
-import com.erofeev.st.alexei.myonlineshop.service.model.UserLoginDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserSessionDTO;
 
@@ -16,10 +15,12 @@ public class UserConverter {
         String surName = userDTO.getLastName();
         String email = userDTO.getEmail();
         String password = userDTO.getPassword();
+        Role role = userDTO.getRole();
         user.setEmail(email);
         user.setFirstName(name);
         user.setLastName(surName);
         user.setPassword(password);
+        user.setRole(role);
         return user;
     }
 

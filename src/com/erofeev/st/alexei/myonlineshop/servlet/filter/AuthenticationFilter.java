@@ -22,6 +22,7 @@ public class AuthenticationFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         CUSTOMER_AVAILABLE.add(CommandEnum.ITEMS);
         CUSTOMER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD);
+        CUSTOMER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD_PAGE);
         CUSTOMER_AVAILABLE.add(CommandEnum.ORDER);
         CUSTOMER_AVAILABLE.add(CommandEnum.MY_ORDERS);
         CUSTOMER_AVAILABLE.add(CommandEnum.LOGOUT);
@@ -35,11 +36,13 @@ public class AuthenticationFilter implements Filter {
         SELLER_AVAILABLE.add(CommandEnum.ADD_ITEM_PAGE);
         SELLER_AVAILABLE.add(CommandEnum.ORDERS);
         SELLER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD);
+        SELLER_AVAILABLE.add(CommandEnum.CHANGE_PASSWORD_PAGE);
         SELLER_AVAILABLE.add(CommandEnum.LOGOUT);
         SELLER_AVAILABLE.add(CommandEnum.REGISTRATION);
         SELLER_AVAILABLE.add(CommandEnum.REGISTRATION_PAGE);
         SELLER_AVAILABLE.add(CommandEnum.PROFILE_MENU);
         SELLER_AVAILABLE.add(CommandEnum.PROFILE_MENU_CHANGE);
+        SELLER_AVAILABLE.add(CommandEnum.IMPORT_PAGE);
 
 
     }

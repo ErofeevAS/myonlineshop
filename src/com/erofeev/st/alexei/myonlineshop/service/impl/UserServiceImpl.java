@@ -11,6 +11,7 @@ import com.erofeev.st.alexei.myonlineshop.service.SecureService;
 import com.erofeev.st.alexei.myonlineshop.service.UserService;
 import com.erofeev.st.alexei.myonlineshop.service.converter.UserConverter;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
+import com.erofeev.st.alexei.myonlineshop.service.model.UserRegistrationDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     public static UserService getInstance() {
         if (instance == null) {
-            synchronized (UserService.class) {
+            synchronized (UserServiceImpl.class) {
                 if (instance == null) {
                     instance = new UserServiceImpl();
                 }
@@ -40,49 +41,52 @@ public class UserServiceImpl implements UserService {
     public UserDTO findById(Long id, boolean isLazy) throws ServiceException {
         User user;
         try (Connection connection = connectionService.getConnection()) {
-            user = userRepository.findById(connection, id, isLazy);
-            UserDTO userDTO = UserConverter.toDTO(user);
-            if (user == null) {
-                throw new ServiceException("User not found");
+            try {
+                user = userRepository.findById(connection, id, isLazy);
+                UserDTO userDTO = UserConverter.toDTO(user);
+                if (user == null) {
+                    throw new ServiceException("User not found");
+                }
+                return userDTO;
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
             }
-            return userDTO;
         } catch (SQLException e) {
-            throw new ServiceException("Problem with database connection", e);
-        } catch (RepositoryException e) {
-            throw new ServiceException(e);
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
-
     }
 
     @Override
     public Integer updateInfo(UserDTO userDTO) throws ServiceException {
         User user = UserConverter.fromDTO(userDTO);
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            Integer amountUpdatedUsers;
             try {
+                connection.setAutoCommit(false);
+                Integer amountUpdatedUsers;
                 amountUpdatedUsers = userRepository.update(connection, user);
+                switch (amountUpdatedUsers) {
+                    case 0:
+                        connection.rollback();
+                        throw new ServiceException("user not found");
+                    case 1:
+                        System.out.println("user was updated");
+                        connection.commit();
+                        break;
+                    default:
+                        connection.rollback();
+                        String message = "operation failed, too many rows for updateInfo, transaction was canceled";
+                        throw new ServiceException(message);
+                }
+                connection.commit();
+                return amountUpdatedUsers;
             } catch (RepositoryException e) {
-                System.out.println(e.getMessage());
+                connection.rollback();
                 throw new ServiceException(e);
             }
-            switch (amountUpdatedUsers) {
-                case 0:
-                    System.out.println("user not found");
-                    break;
-                case 1:
-                    System.out.println("user was updated");
-                    connection.commit();
-                    break;
-                default:
-                    connection.rollback();
-                    String message = "operation failed, too many rows for updateInfo, transaction was canceled";
-                    throw new ServiceException(message);
-            }
-            return amountUpdatedUsers;
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ServiceException("Can't set connection.", e);
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
     }
 
@@ -90,18 +94,26 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(Long id, String oldPassword, String newPassword) throws ServiceException {
         User user;
         try (Connection connection = connectionService.getConnection()) {
-            user = userRepository.findById(connection, id, true);
-            String passwordFromDataBase = user.getPassword();
-            String hashOldPassword = secureService.hashPassword(oldPassword);
-            if (secureService.comparePasswords(passwordFromDataBase, hashOldPassword)) {
-                String hashNewPassword = secureService.hashPassword(newPassword);
-                userRepository.updatePassword(connection, id, hashNewPassword);
-            } else {
-                String message = "Wrong password";
-                throw new ServiceException(message);
+            try {
+                connection.setAutoCommit(false);
+                user = userRepository.findById(connection, id, true);
+                String passwordFromDataBase = user.getPassword();
+                String hashOldPassword = secureService.hashPassword(oldPassword);
+                if (secureService.comparePasswords(passwordFromDataBase, hashOldPassword)) {
+                    String hashNewPassword = secureService.hashPassword(newPassword);
+                    userRepository.updatePassword(connection, id, hashNewPassword);
+                } else {
+                    String message = "Wrong password";
+                    throw new ServiceException(message);
+                }
+                connection.commit();
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
             }
-        } catch (SQLException | RepositoryException e) {
-            throw new ServiceException(e);
+        } catch (SQLException e) {
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
     }
 
@@ -109,17 +121,20 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email, boolean isLazy) throws ServiceException {
         User user;
         try (Connection connection = connectionService.getConnection()) {
-            connection.setAutoCommit(false);
-            user = userRepository.findByEmail(connection, email, isLazy);
-            if (user == null) {
-                return null;
+            try {
+                connection.setAutoCommit(false);
+                user = userRepository.findByEmail(connection, email, isLazy);
+                if (user == null) {
+                    return null;
+                }
+                connection.commit();
+                return user;
+            } catch (RepositoryException e) {
+                throw new ServiceException(e);
             }
-            connection.commit();
-            return user;
-        } catch (RepositoryException e) {
-            throw new ServiceException(e);
         } catch (SQLException e) {
-            throw new ServiceException("Problem with database connection", e);
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
 
     }
@@ -130,6 +145,26 @@ public class UserServiceImpl implements UserService {
         String passwordFromWeb = secureService.hashPassword(password);
         return (secureService.comparePasswords(passwordFromWeb, passwordFromDataBase));
     }
+
+    @Override
+    public User save(UserRegistrationDTO userRegistrationDTO) throws ServiceException {
+        User user = UserConverter.fromUserRegistrationDTO(userRegistrationDTO);
+        try (Connection connection = connectionService.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                user = userRepository.save(connection, user);
+                connection.commit();
+                return user;
+            } catch (RepositoryException e) {
+                connection.rollback();
+                throw new ServiceException(e);
+            }
+        } catch (SQLException e) {
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
+        }
+    }
+
 
     @Override
     public Integer getAmountOfUser() throws ServiceException {
@@ -144,7 +179,8 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(e);
             }
         } catch (SQLException e) {
-            throw new ServiceException("Problem with database connection", e);
+            String message = "Can't open connection: " + e.getMessage();
+            throw new ServiceException(message, e);
         }
     }
 }

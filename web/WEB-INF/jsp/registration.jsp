@@ -6,7 +6,7 @@
 <head>
 	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />" />
 	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
-	<title>Login</title>
+	<title>Registration</title>
 </head>
 
 
@@ -48,9 +48,9 @@
 								<input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
 								<label for="inputPassword">Password</label>
 							</div>
-							<c:if test="${not empty messages.password}">
+							<c:if test="${not empty messages.repassword}">
 								<div class="alert alert-warning" role="alert">
-									<c:out value="${messages.password}"></c:out>
+									<c:out value="${messages.repassword}"></c:out>
 								</div>
 							</c:if>
 							<div class="form-label-group">

@@ -1,14 +1,5 @@
 package com.erofeev.st.alexei.myonlineshop.servlet.command;
 
-import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
-import com.erofeev.st.alexei.myonlineshop.service.DataBaseCreatorService;
-import com.erofeev.st.alexei.myonlineshop.service.impl.DataBaseCreatorServiceImpl;
-import com.erofeev.st.alexei.myonlineshop.servlet.command.exception.CommandNotFound;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-
 public enum CommandEnum {
     LOGIN,
     REGISTRATION,
@@ -21,9 +12,11 @@ public enum CommandEnum {
     MY_ORDERS,
     ITEMS_DELETE,
     CHANGE_PASSWORD,
+    CHANGE_PASSWORD_PAGE,
     LOGOUT,
     PROFILE_MENU,
-    PROFILE_MENU_CHANGE;
+    PROFILE_MENU_CHANGE,
+    IMPORT_PAGE;
 
 
     public static CommandEnum getCommand(String command) {

@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     public static UserRepository getInstance() {
         if (instance == null) {
-            synchronized (UserRepository.class) {
+            synchronized (UserRepositoryImpl.class) {
                 if (instance == null) {
                     instance = new UserRepositoryImpl();
                 }
@@ -97,7 +97,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return getUser(resultSet, isLazy);
             }
         } catch (SQLException e) {
-            String message = "Can't find user by email: " + e.getMessage();
+            String message = "Can't find user by email: " + email + " error" + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }
@@ -108,9 +108,9 @@ public class UserRepositoryImpl implements UserRepository {
                 "       roles.id as role_id,roles.name as role_name," +
                 "       permissions.id as permission_id,permissions.name" +
                 "       FROM users" +
-                "       JOIN roles ON users.role_id = roles.id and users.id=?" +
+                "       JOIN roles ON users.role_id = roles.id " +
                 "       JOIN  role_permission  ON roles.id = role_permission.role_id" +
-                "       JOIN  permissions ON role_permission.permission_id =  permissions.id";
+                "       JOIN  permissions ON role_permission.permission_id =  permissions.id where users.id=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
@@ -118,8 +118,8 @@ public class UserRepositoryImpl implements UserRepository {
                 return getUser(resultSet, isLazy);
             }
         } catch (SQLException e) {
-            String message = "Can't find user by email: " + e.getMessage();
-            throw new RepositoryException(message);
+            String message = "Can't find user by id: " + id + " error" + e.getMessage();
+            throw new RepositoryException(message, e);
         }
     }
 
@@ -131,7 +131,7 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setLong(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            String message = "Can't updateInfo password" + e.getMessage();
+            String message = "Can't updateInfo password for user_id: " + id + " error: " + e.getMessage();
             throw new RepositoryException(message, e);
         }
     }

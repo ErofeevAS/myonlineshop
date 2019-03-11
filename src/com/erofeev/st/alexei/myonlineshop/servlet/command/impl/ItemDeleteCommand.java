@@ -31,6 +31,9 @@ public class ItemDeleteCommand implements Command {
             String uniqueNumber = request.getParameter("uniquenumber");
             itemService.delete(uniqueNumber);
             List<ItemDTO> items = itemService.findItems(page, amount);
+            if (uniqueNumber != null) {
+                request.setAttribute("info", "item with uniqueNumber: " + uniqueNumber + " was deleted");
+            }
             request.setAttribute("page", page);
             request.setAttribute("amount", amount);
             request.setAttribute("maxpages", maxPages);

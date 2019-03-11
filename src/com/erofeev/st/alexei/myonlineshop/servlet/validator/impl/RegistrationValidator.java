@@ -4,7 +4,6 @@ import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Map;
 
 public class RegistrationValidator extends Validator {
     private static volatile Validator instance = null;
@@ -25,8 +24,8 @@ public class RegistrationValidator extends Validator {
 
 
     public Boolean isRequestValid(HttpServletRequest request) {
-        boolean isValid = true;
-        Map<String, String> messages = new HashMap<>();
+        messages = new HashMap<>();
+        isValid = true;
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String rePassword = request.getParameter("repassword");
@@ -43,21 +42,7 @@ public class RegistrationValidator extends Validator {
                 isValid = false;
             }
         }
-
-        if (isNull(password)) {
-            messages.put("password", MESSAGE_NOT_NULL);
-            isValid = false;
-        }
-        if (isNull(rePassword)) {
-            messages.put("repassword", MESSAGE_NOT_NULL);
-            isValid = false;
-        }
-        if (!(isNull(password) && isNull(rePassword))) {
-            if (!isPasswordsEqual(password, rePassword)) {
-                messages.put("password", MESSAGE_DIFFERENT_PASSWORD);
-                messages.put("repassword", MESSAGE_DIFFERENT_PASSWORD);
-            }
-        }
+        isValid = isPasswordValid(password, rePassword);
         if (isNull(firstName)) {
             messages.put("firstname", MESSAGE_NOT_NULL);
             isValid = false;

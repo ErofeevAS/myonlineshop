@@ -12,7 +12,6 @@ import com.erofeev.st.alexei.myonlineshop.service.model.UserSessionDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.ProfileValidator;
-import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.RegistrationValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -77,8 +77,17 @@
                         <hr class="my-4">
 
                         <div id="register-link" class="text-right">
-                            <a href="${pageContext.request.contextPath}/shop?command=change_password" class="text-info">change
+                            <a href="${pageContext.request.contextPath}/shop?command=change_password_page" class="text-info">change
                                 password</a>
+                        </div>
+                        <div id="register-link" class="text-right">
+                            <c:if test="${user.permission.name == 'CUSTOMER' }">
+                                <a href="${pageContext.request.contextPath}/shop?command=items" class="text-info">back</a>
+                            </c:if>
+                            <c:if test="${user.permission.name == 'SELLER' }">
+                                <a href="${pageContext.request.contextPath}/shop?command=items_delete" class="text-info">back</a>
+                            </c:if>
+
                         </div>
                     </form>
                 </div>

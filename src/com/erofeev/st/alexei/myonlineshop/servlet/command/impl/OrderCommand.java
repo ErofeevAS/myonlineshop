@@ -11,6 +11,7 @@ import com.erofeev.st.alexei.myonlineshop.service.model.OrderDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserDTO;
 import com.erofeev.st.alexei.myonlineshop.service.model.UserSessionDTO;
 import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
+import com.erofeev.st.alexei.myonlineshop.servlet.command.CommandEnum;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.QuantityValidator;
 
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import static com.erofeev.st.alexei.myonlineshop.servlet.DispatcherServlet.BASE_URL;
 
 public class OrderCommand implements Command {
     private ItemService itemService = ItemServiceImpl.getInstance();
@@ -29,9 +32,8 @@ public class OrderCommand implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServiceException {
         String page;
         if (!validator.isRequestValid(request)) {
-            String baseURL = "/myonlineshop/shop?command=";
             try {
-                response.sendRedirect(baseURL + "items");
+                response.sendRedirect(BASE_URL + CommandEnum.ITEMS.name().toLowerCase());
             } catch (IOException e) {
                 e.printStackTrace();
             }

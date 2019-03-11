@@ -25,8 +25,8 @@ public class QuantityValidator extends Validator {
 
     @Override
     public Boolean isRequestValid(HttpServletRequest request) {
-        boolean isValid = true;
-        Map<String, String> messages = new HashMap<>();
+        messages = new HashMap<>();
+        isValid = true;
         String quantity = request.getParameter("quantity");
         if (isNull(quantity)) {
             isValid = false;

@@ -64,10 +64,13 @@
                                     <option selected="selected">
                                             ${order.status}
                                     </option>
-                                    <option>NEW</option>
-                                    <option>REVIEWING</option>
-                                    <option>IN_PROCESS</option>
-                                    <option>DELIVERED</option>
+                                    <c:forEach items="${requestScope.status_list}" var="status">
+                                        <option>${status}</option>
+                                    </c:forEach>
+                                        <%--<option>NEW</option>--%>
+                                        <%--<option>REVIEWING</option>--%>
+                                        <%--<option>IN_PROCESS</option>--%>
+                                        <%--<option>DELIVERED</option>--%>
                                 </select>
                             </td>
                             <td>
