@@ -30,7 +30,7 @@
             <param-value>/WEB-INF/items.xsd</param-value>
         </init-param>
         <multipart-config>
-            <location>C:\temp</location>
+            <location>C:\tmp</location>
             <max-file-size>1000000</max-file-size>
             <max-request-size>2000000</max-request-size>
             <file-size-threshold>500000</file-size-threshold>

@@ -5,9 +5,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/login.css">
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <title>Delete menu</title>
@@ -40,11 +37,6 @@
                 <c:out value="${error}"></c:out>
             </div>
         </c:if>
-        <%--<c:if test="${not empty info}">--%>
-            <%--<div class="alert alert-warning" role="alert">--%>
-                <%--<c:out value="${info}"></c:out>--%>
-            <%--</div>--%>
-        <%--</c:if>--%>
         <div class="col-sm-10">
             <table class="table table-dark">
                 <thead>
@@ -61,10 +53,10 @@
                     <tr>
                         <form action="${pageContext.request.contextPath}/shop?command=items_delete"
                               method="post">
-                            <th scope="row">${count+(page-1)*amount}</th>
-                            <td>${item.name}</td>
-                            <td>${item.description}</td>
-                            <td>${item.price}</td>
+                            <th scope="row"><c:out value="${count+(page-1)*amount}"></c:out></th>
+                            <td><c:out value="${item.name}"></c:out></td>
+                            <td><c:out value="${item.description}"></c:out></td>
+                            <td><c:out value="${item.price}"></c:out> </td>
                             <input type="hidden" name="uniquenumber" value="${item.uniqueNumber}">
                             <td style="display: none">${item.uniqueNumber}</td>
                             <td>
@@ -89,7 +81,6 @@
                 </thead>
             </table>
         </div>
-
     </div>
 </div>
 

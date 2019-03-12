@@ -12,14 +12,11 @@
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <title>ITEMS</title>
 
-</head>
-
 
 </head>
 <header>
     <h1>SHOP</h1>
 </header>
-
 
 <body>
 <div class="container">

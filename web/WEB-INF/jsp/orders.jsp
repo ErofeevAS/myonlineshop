@@ -5,14 +5,11 @@
 <head>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
-    <title>Login</title>
+    <title>Orders</title>
 </head>
-
 <header>
     <h1>SHOP</h1>
 </header>
-
-
 <body>
 <div class="container">
     <div class="row">
@@ -67,10 +64,6 @@
                                     <c:forEach items="${requestScope.status_list}" var="status">
                                         <option>${status}</option>
                                     </c:forEach>
-                                        <%--<option>NEW</option>--%>
-                                        <%--<option>REVIEWING</option>--%>
-                                        <%--<option>IN_PROCESS</option>--%>
-                                        <%--<option>DELIVERED</option>--%>
                                 </select>
                             </td>
                             <td>
@@ -87,7 +80,7 @@
                 </jsp:include>
 
                 <c:if test="${not empty info}">
-                    <div class="alert alert-warning" role="alert">
+                    <div class="alert alert-info" role="alert">
                         <c:out value="${info}"></c:out>
                     </div>
                 </c:if>

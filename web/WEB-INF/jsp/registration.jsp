@@ -8,9 +8,6 @@
 	<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
 	<title>Registration</title>
 </head>
-
-
-
 <body>
 	<div class="container">
 		<div class="row">
@@ -24,7 +21,7 @@
 							</div>
 						</c:if>
 						<c:if test="${not empty info}">
-							<div class="alert alert-warning" role="alert">
+							<div class="alert alert-info" role="alert">
 								<c:out value="${info}"></c:out>
 							</div>
 						</c:if>
@@ -106,7 +103,6 @@
 			</div>
 		</div>
 	</div>
-
 	<script src ="js/bootstrap.min.js"></script>
 </body>
 

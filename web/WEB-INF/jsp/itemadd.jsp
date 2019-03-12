@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/login.css">
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
-    <title>Login</title>
+    <title>add item</title>
 </head>
 
 
@@ -66,7 +66,7 @@
                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">save</button>
                         <hr class="my-4">
 
-                        <div id="register-link" class="text-right">
+                        <div class="text-right">
                             <a href="${pageContext.request.contextPath}/shop?command=items_delete" class="text-info">back</a>
                         </div>
                     </form>

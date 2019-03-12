@@ -46,7 +46,6 @@ public class DispatcherServlet extends HttpServlet {
         commands.put(CommandEnum.PROFILE_MENU, new ProfileMenuCommand());
         commands.put(CommandEnum.PROFILE_MENU_CHANGE, new ProfileMenuChangeCommand());
         commands.put(CommandEnum.IMPORT_PAGE, new ImportPageCommand());
-
         initDataBase();
     }
 

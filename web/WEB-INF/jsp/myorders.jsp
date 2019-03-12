@@ -3,11 +3,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%--<meta charset="utf-8">--%>
-    <%--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">--%>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
-    <title>My order</title>
+    <title>My orders</title>
 </head>
 
 
@@ -48,7 +46,6 @@
                 <tbody>
                 <c:forEach items="${requestScope.orders}" var="order">
                     <c:set var="count" value="${count+1}" scope="page"/>
-
                     <tr>
                         <form action="${pageContext.request.contextPath}/shop?command=my_orders"
                               method="post">

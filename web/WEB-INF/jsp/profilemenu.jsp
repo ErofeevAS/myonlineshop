@@ -5,7 +5,7 @@
 <head>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />"/>
     <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
-    <title>Login</title>
+    <title>Profile</title>
 </head>
 
 

@@ -29,7 +29,6 @@ public class OrdersCommand implements Command {
             return url;
         }
         request.setAttribute("amountofobject", amountOfItems);
-
         List<String> statusList = new ArrayList<>();
         for (StatusEnum status : StatusEnum.values()) {
             statusList.add(status.name());
@@ -44,7 +43,6 @@ public class OrdersCommand implements Command {
         request.setAttribute("items", orders);
         request.setAttribute("maxpages", maxPages);
         request.setAttribute("orders", orders);
-
         String idString = request.getParameter("id");
         if (idString == null) {
             return url;
@@ -56,7 +54,9 @@ public class OrdersCommand implements Command {
         orderDTO.setId(id);
         try {
             orderService.changeStatus(orderDTO, status);
-        }  catch (ServiceException e) {
+            orders = orderService.getAllOrders(page, amount);
+            request.setAttribute("orders", orders);
+        } catch (ServiceException e) {
             e.printStackTrace();
         }
         return url;

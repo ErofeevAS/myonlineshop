@@ -9,6 +9,7 @@ import com.erofeev.st.alexei.myonlineshop.servlet.command.Command;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.Validator;
 import com.erofeev.st.alexei.myonlineshop.servlet.validator.impl.ItemValidator;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ public class ItemAddCommand implements Command {
     private Validator validator = ItemValidator.getInstance();
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEM_ADD_PAGE);
         if (!validator.isRequestValid(request)) {
             return page;
@@ -31,8 +32,8 @@ public class ItemAddCommand implements Command {
             itemService.save(itemDTO);
             request.setAttribute("info", " item was saved");
         } catch (ServiceException e) {
-            System.out.println(e.getMessage());
             request.setAttribute("error", e.getMessage());
+            throw new ServletException(e);
         }
         return page;
     }

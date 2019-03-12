@@ -1,5 +1,6 @@
 package com.erofeev.st.alexei.myonlineshop.servlet;
 
+import com.erofeev.st.alexei.myonlineshop.config.connection.ConfigurationManagerImpl;
 import com.erofeev.st.alexei.myonlineshop.repository.exception.ServiceException;
 import com.erofeev.st.alexei.myonlineshop.repository.model.Item;
 import com.erofeev.st.alexei.myonlineshop.service.ItemService;
@@ -10,6 +11,7 @@ import com.erofeev.st.alexei.myonlineshop.xml.XMLService;
 import com.erofeev.st.alexei.myonlineshop.xml.impl.XMLServiceImpl;
 import com.erofeev.st.alexei.myonlineshop.xml.model.ItemXML;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,6 +23,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static com.erofeev.st.alexei.myonlineshop.servlet.DispatcherServlet.BASE_URL;
 
 public class ImportXMLServlet extends HttpServlet {
     private XMLService xmlService = XMLServiceImpl.getInstance();
@@ -43,15 +47,21 @@ public class ImportXMLServlet extends HttpServlet {
             List<Item> items = ItemConverter.convertItemsXMLtoItems(itemsXML);
             try {
                 itemService.importItems(items);
+                Integer amountOfItems = items.size();
+                req.setAttribute("info", amountOfItems + " items was import");
             } catch (ServiceException e) {
                 e.printStackTrace();
+                req.setAttribute("error", "XML FILE NOT VALID");
             }
         } else {
             req.setAttribute("error", "XML FILE NOT VALID");
         }
-        String baseURL = "/myonlineshop/shop?command=";
-        String page = baseURL + CommandEnum.ITEMS_DELETE.name().toLowerCase();
-        resp.sendRedirect(page);
+//        String page = BASE_URL + CommandEnum.IMPORT_PAGE.name().toLowerCase();
+//        resp.sendRedirect(page);
+
+        String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.IMPORT_PAGE);
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
+        dispatcher.forward(req, resp);
     }
 
     @Override
@@ -70,30 +80,4 @@ public class ImportXMLServlet extends HttpServlet {
 
         return stringBuilder.toString();
     }
-
-//
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        ServletConfig config = getServletConfig();
-//        String xsdFilePath = config.getInitParameter("xsd");
-//        String dirPath = config.getInitParameter("dir");
-//        ServletContext app = getServletContext();
-//        File tmpDir = (File)app.getAttribute("javax.servlet.context.tempdir");
-//        File tmpFile = new File(tmpDir.getAbsolutePath() + dirPath);
-//        tmpFile.mkdir();
-//        File xsd = new File(xsdFilePath);
-//        System.out.println(tmpDir);
-//        Part part = req.getPart("file");
-//        InputStream inputStream = part.getInputStream();
-//        try {
-//            System.out.println("XML");
-//            itemService.importItems(inputStream, xsd);
-//        } catch (ServiceException e) {
-//            e.printStackTrace();
-//        }
-//        String page = ConfigurationManagerImpl.getInstance().getProperty(ConfigurationManagerImpl.ITEMS_PAGE);
-//        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
-//        dispatcher.forward(req, resp);
-//
-//    }
 }
