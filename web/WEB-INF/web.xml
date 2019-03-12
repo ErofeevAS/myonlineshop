@@ -9,7 +9,7 @@
 
     <servlet>
         <servlet-name>DispatcherServlet</servlet-name>
-        <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>com.gmail.erofeev.st.alexei.myonlineshop.servlet.DispatcherServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -24,7 +24,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>ImportXMLServlet</servlet-name>
-        <servlet-class>com.erofeev.st.alexei.myonlineshop.servlet.ImportXMLServlet</servlet-class>
+        <servlet-class>com.gmail.erofeev.st.alexei.myonlineshop.servlet.ImportXMLServlet</servlet-class>
         <init-param>
             <param-name>xsdPath</param-name>
             <param-value>/WEB-INF/items.xsd</param-value>
@@ -43,7 +43,7 @@
 
     <filter>
         <filter-name>LogFilter</filter-name>
-        <filter-class>com.erofeev.st.alexei.myonlineshop.servlet.filter.LogFilter</filter-class>
+        <filter-class>com.gmail.erofeev.st.alexei.myonlineshop.servlet.filter.LogFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LogFilter</filter-name>
@@ -51,12 +51,23 @@
     </filter-mapping>
     <filter>
         <filter-name>AuthenticationFilter</filter-name>
-        <filter-class>com.erofeev.st.alexei.myonlineshop.servlet.filter.AuthenticationFilter</filter-class>
+        <filter-class>com.gmail.erofeev.st.alexei.myonlineshop.servlet.filter.AuthenticationFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
         <servlet-name>DispatcherServlet</servlet-name>
     </filter-mapping>
 
-
+    <servlet>
+        <servlet-name>ErrorServlet</servlet-name>
+        <servlet-class>com.gmail.erofeev.st.alexei.myonlineshop.servlet.ExceptionHandler</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorServlet</servlet-name>
+        <url-pattern>/errors</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/errors</location>
+    </error-page>
 </web-app>
